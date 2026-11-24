@@ -80,7 +80,7 @@ test.describe("design system", () => {
       const hit = document.elementFromPoint(btn.left + btn.width / 2, btn.top + btn.height / 2);
       return { vw, sw: document.documentElement.scrollWidth, vv: window.visualViewport?.scale, btn: [btn.left, btn.top, btn.width, btn.height], h1: [h1.left, h1.top, h1.width, h1.height], hit: hit?.tagName + "." + hit?.getAttribute("class"), wide };
     });
-    console.log("DIAG", JSON.stringify(diag));
+    console.warn("DIAG", JSON.stringify(diag));
 
     await page.getByRole("button", { name: /Theme: Light/ }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
