@@ -1,7 +1,10 @@
 import type { HTMLAttributes, TdHTMLAttributes, ThHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
 
-/** Data table. Wraps in a horizontal scroller so wide tables work on phones. */
+/**
+ * Data table. Wraps in a horizontal scroller so wide tables work on phones;
+ * inline-size containment stops the table's width from stretching the page.
+ */
 export function Table({
   className,
   caption,
@@ -9,7 +12,7 @@ export function Table({
   ...props
 }: HTMLAttributes<HTMLTableElement> & { caption?: string }) {
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto [contain:inline-size]">
       <table className={cn("w-full border-collapse text-left type-small", className)} {...props}>
         {caption ? <caption className="sr-only">{caption}</caption> : null}
         {children}
