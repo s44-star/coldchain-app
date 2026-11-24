@@ -70,6 +70,13 @@ jobs:
             npm install --no-audit --no-fund
           fi
 
+      - name: Export resolved lockfile to the log
+        if: hashFiles('package-lock.json') != ''
+        run: |
+          echo "LOCKFILE-BEGIN"
+          gzip -9 -c package-lock.json | base64 -w 3000
+          echo "LOCKFILE-END"
+
       - name: Show npm debug log
         if: failure()
         run: tail -n 120 ~/.npm/_logs/*-debug-0.log || true
