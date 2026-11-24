@@ -67,6 +67,21 @@ test.describe("design system", () => {
     await expect(page.getByRole("heading", { level: 1, name: "Glacier design system" })).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
 
+    // TEMP diagnostics
+    const diag = await page.evaluate(() => {
+      const vw = window.innerWidth;
+      const wide = [...document.querySelectorAll("body *")]
+        .map((el) => ({ el, r: el.getBoundingClientRect() }))
+        .filter(({ r }) => r.right > vw + 1 || r.left < -1)
+        .slice(0, 15)
+        .map(({ el, r }) => `${el.tagName}.${(el.getAttribute("class") ?? "").slice(0, 80)} [${Math.round(r.left)}..${Math.round(r.right)}]`);
+      const btn = document.querySelector("button[aria-label^='Theme']")!.getBoundingClientRect();
+      const h1 = document.querySelector("h1")!.getBoundingClientRect();
+      const hit = document.elementFromPoint(btn.left + btn.width / 2, btn.top + btn.height / 2);
+      return { vw, sw: document.documentElement.scrollWidth, vv: window.visualViewport?.scale, btn: [btn.left, btn.top, btn.width, btn.height], h1: [h1.left, h1.top, h1.width, h1.height], hit: hit?.tagName + "." + hit?.getAttribute("class"), wide };
+    });
+    console.log("DIAG", JSON.stringify(diag));
+
     await page.getByRole("button", { name: /Theme: Light/ }).click();
     await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
 

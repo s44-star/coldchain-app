@@ -1,6 +1,8 @@
 # ColdChain OS — Stage 0: Architecture, Data Model, Roadmap, Costs
 
-Status: **awaiting approval** · Owner: LexConv · Last updated: 2026-11-24
+Status: **approved 2026-11-24** · Owner: LexConv · Last updated: 2026-11-24
+
+> Stage 1 implementation notes, including the few places the build refines this document, are in [stages/stage-1.md](stages/stage-1.md).
 
 ---
 
