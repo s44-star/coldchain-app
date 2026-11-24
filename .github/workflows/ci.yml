@@ -62,36 +62,11 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci --no-audit --no-fund
-          else
-            echo "::warning::No package-lock.json yet; resolving fresh. Run the 'Refresh lockfile' workflow to commit one."
-            npm install --no-audit --no-fund
-          fi
-
-      - name: Export resolved lockfile to the log
-        if: hashFiles('package-lock.json') != ''
-        run: |
-          echo "LOCKFILE-BEGIN"
-          gzip -9 -c package-lock.json | base64 -w 3000
-          echo "LOCKFILE-END"
+        run: npm ci --no-audit --no-fund
 
       - name: Show npm debug log
         if: failure()
         run: tail -n 120 ~/.npm/_logs/*-debug-0.log || true
-
-      - name: Show npm debug log
-        if: failure()
-        run: tail -n 120 ~/.npm/_logs/*-debug-0.log || true
-
-      - name: Upload resolved lockfile
-        if: hashFiles('package-lock.json') != ''
-        uses: actions/upload-artifact@v4
-        with:
-          name: package-lock
-          path: package-lock.json
-          retention-days: 7
 
       - name: Lint
         run: npm run lint
@@ -129,6 +104,4 @@ jobs:
         with:
           node-version-file: .nvmrc
       - name: Audit production dependencies
-        run: |
-          if [ ! -f package-lock.json ]; then npm install --package-lock-only --no-audit --no-fund; fi
-          npm audit --omit=dev --audit-level=high
+        run: npm audit --omit=dev --audit-level=high

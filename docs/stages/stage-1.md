@@ -46,20 +46,24 @@ Delivered 2026-11-24 · Pull request #1 · Scope from [ARCHITECTURE.md §9](../A
 - **Glacier design system** (`src/components`): Archivo with its width axis for hierarchy, light app theme with dark mode (stored in a cookie, no flash), buttons, form fields with accessible errors, status badges mapped from database states, callouts, tables, zone reading with tolerance band, empty and loading states. Preview at `/design-system`.
 - **Marketing page** (`/`): dark, built around a 24-hour 2–8 °C trace with one excursion. The chart is labelled as an illustration.
 - **`/api/health`**: reports whether configuration and database are reachable, without revealing values.
+- **Hosting:** `vercel.json` fixes the framework preset to Next.js and runs server code in Frankfurt (`fra1`), next to the EU database. `package-lock.json` pins every dependency; the **Refresh lockfile** workflow updates it on demand.
 
 ## Tests
 
 | Suite | Where | Result |
 |---|---|---|
-| Database: migrations + RLS | `supabase/tests` — Postgres 17 in CI | 110 assertions + 4 static checks — pending CI |
-| Unit | `tests/unit` — Vitest | pending CI |
-| End-to-end | `tests/e2e` — Playwright, desktop + mobile Chrome | pending CI |
-| Lint, type check, production build | CI | pending CI |
+| Database: migrations + RLS | `supabase/tests` — Postgres 17 in CI | ✅ 110 assertions + 4 static checks (RLS on every table, a policy on every table, pinned `search_path` on definer functions, nothing readable by anonymous users except the price list) |
+| Unit | `tests/unit` — Vitest | ✅ 20 tests |
+| End-to-end | `tests/e2e` — Playwright, desktop + mobile Chrome | ✅ 18 tests: pages render under the strict CSP with no console errors, every script carries the nonce, security headers present, theme switch persists, no sideways scrolling on phones, 404 page, health endpoint leaks nothing |
+| Lint, type check, production build | CI | ✅ |
+| Dependency audit (`npm audit`, high and above) | CI | ✅ none |
+| Vercel production build (`coldchain-app-z971`) | Vercel | ✅ |
+
+The mobile end-to-end test caught one real bug during the build: the zones table was wide enough to make phones zoom the whole page out. Tables now scroll inside their own box.
 
 ## Not done yet
 
 - **No sign-up or login screens** — Stage 2. Until then the app has only the marketing page, the design system and the health check.
-- **No lockfile committed** (`package-lock.json`). Package installs are blocked in this build session; run **Actions → Refresh lockfile → Run workflow** once to commit one, so every build installs identical versions.
 - **Plan limits are not enforced** (max warehouses, sensors, users) — Stage 5, together with billing.
 - **Deleting a user who owns a company** leaves the company without an owner; ownership must be transferred first. The Stage 2 account-deletion flow will enforce this.
 - **Reading retention job** (24 months, then hourly aggregates) — Stage 3/4 cron.
