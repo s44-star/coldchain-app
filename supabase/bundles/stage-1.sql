@@ -1,7 +1,6 @@
 -- =============================================================================
--- ColdChain OS · Stage 1 database setup (generated — do not edit)
--- Source: supabase/migrations/0001…0013 + supabase/seed/plans.sql
--- Paste into Supabase → SQL Editor → Run, once, on a fresh project.
+-- ColdChain OS · stage-1 database changes (generated — do not edit)
+-- Paste into Supabase → SQL Editor → Run, once. Run earlier stages first.
 -- =============================================================================
 
 -- >>> 0001_foundation.sql

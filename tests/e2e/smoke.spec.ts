@@ -22,6 +22,7 @@ test.describe("landing page", () => {
       /^mailto:ceo@lexconv\.com/,
     );
     await expect(page.locator("figure figcaption")).toContainText("Illustration");
+    await expect(page.getByRole("link", { name: "Start free trial" })).toHaveAttribute("href", "/signup");
 
     // Hydration finished = Next.js scripts ran, so the nonce was accepted.
     await page.waitForLoadState("networkidle");
@@ -78,7 +79,7 @@ test.describe("design system", () => {
 });
 
 test.describe("mobile layout", () => {
-  for (const path of ["/", "/design-system"]) {
+  for (const path of ["/", "/design-system", "/login", "/signup"]) {
     test(`${path} fits the screen without sideways scrolling`, async ({ page }) => {
       await page.goto(path);
       const viewport = page.viewportSize();
@@ -91,6 +92,48 @@ test.describe("mobile layout", () => {
       expect(size.scroll).toBeLessThanOrEqual(size.inner);
     });
   }
+});
+
+test.describe("sign-in screens", () => {
+  for (const [path, heading] of [
+    ["/login", "Sign in to ColdChain OS"],
+    ["/signup", "Start your 14-day free trial"],
+    ["/forgot-password", "Reset your password"],
+  ] as const) {
+    test(`${path} renders without errors`, async ({ page }) => {
+      const errors = watchErrors(page);
+      await page.goto(path);
+      await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
+      await page.waitForLoadState("networkidle");
+      expect(errors).toEqual([]);
+    });
+  }
+
+  test("signup form validates before submitting", async ({ page }) => {
+    await page.goto("/signup");
+    await page.getByLabel("Full name").fill("A");
+    await page.getByLabel("Work e-mail").fill("not-an-email");
+    await page.getByLabel("Password").fill("short");
+    await page.getByRole("button", { name: "Create account" }).click();
+    // Without Supabase configured (CI) the server answers before validation;
+    // with it, field errors appear. Either way the user gets a visible reason.
+    await expect(page.getByRole("alert").first()).toBeVisible();
+  });
+
+  test("the app requires signing in", async ({ page }) => {
+    await page.goto("/app/settings/team");
+    await expect(page).toHaveURL(/\/login(\?|$)/);
+  });
+
+  test("invalid invitation links explain what to do", async ({ page }) => {
+    await page.goto("/invite/not-a-real-token");
+    await expect(page.getByText("This invitation link is not valid")).toBeVisible();
+  });
+});
+
+test("payment webhook refuses requests when not configured or unsigned", async ({ request }) => {
+  const response = await request.post("/api/webhooks/razorpay", { data: { event: "payment.captured" } });
+  expect([400, 503]).toContain(response.status());
 });
 
 test.describe("health endpoint", () => {

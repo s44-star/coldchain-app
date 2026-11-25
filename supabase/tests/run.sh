@@ -56,7 +56,7 @@ echo "▸ Static checks: RLS on every table, policies present, definer functions
     if bad is not null then raise exception 'Tables readable by anon: %', bad; end if;
   end \$\$;"
 
-for f in "${ROOT}"/supabase/tests/1*.sql; do
+for f in "${ROOT}"/supabase/tests/[1-9][0-9]_*.sql; do
   echo "▸ $(basename "$f")"
   "${PSQL[@]}" -d "${DB}" -f "$f" 2>&1 | sed -e 's/^psql:[^ ]* NOTICE:  /  /'
 done

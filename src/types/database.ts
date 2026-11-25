@@ -1312,6 +1312,10 @@ export type Database = {
           created_by: string | null;
           created_at: string;
           updated_at: string;
+          plan_id: string | null;
+          billing_interval: Database["public"]["Enums"]["billing_interval"] | null;
+          setup_fee_cents: number;
+          period_months: number | null;
         };
         Insert: {
           id?: string;
@@ -1330,6 +1334,10 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          plan_id?: string | null;
+          billing_interval?: Database["public"]["Enums"]["billing_interval"] | null;
+          setup_fee_cents?: number;
+          period_months?: number | null;
         };
         Update: {
           id?: string;
@@ -1348,6 +1356,10 @@ export type Database = {
           created_by?: string | null;
           created_at?: string;
           updated_at?: string;
+          plan_id?: string | null;
+          billing_interval?: Database["public"]["Enums"]["billing_interval"] | null;
+          setup_fee_cents?: number;
+          period_months?: number | null;
         };
         Relationships: [
           {
@@ -1362,6 +1374,13 @@ export type Database = {
             columns: ["created_by"];
             isOneToOne: false;
             referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "payment_records_plan_id_fkey";
+            columns: ["plan_id"];
+            isOneToOne: false;
+            referencedRelation: "subscription_plans";
             referencedColumns: ["id"];
           },
           {
@@ -2134,6 +2153,17 @@ export type Database = {
         };
         Returns: boolean;
       };
+      company_access_state: {
+        Args: {
+          p_company_id: string;
+        };
+        Returns: {
+          state: string;
+          ends_at: string;
+          plan_code: string;
+          plan_name: string;
+        }[];
+      };
       create_company: {
         Args: {
           p_name: string;
@@ -2158,6 +2188,14 @@ export type Database = {
       purge_rate_limits: {
         Args: Record<PropertyKey, never>;
         Returns: number;
+      };
+      record_payment_success: {
+        Args: {
+          p_order_id: string;
+          p_payment_id: string;
+          p_method?: string;
+        };
+        Returns: string;
       };
       transfer_ownership: {
         Args: {
