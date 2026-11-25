@@ -98,7 +98,9 @@ export function SignupForm({ next, email }: { next?: string; email?: string }) {
         Create account
       </SubmitButton>
       <p className="type-caption text-ink-muted">
-        14-day free trial. No card needed until you choose a plan.
+        14-day free trial. No card needed until you choose a plan. By creating an account you agree to the{" "}
+        <Link href="/terms" className="text-primary underline underline-offset-2">terms</Link> and{" "}
+        <Link href="/privacy" className="text-primary underline underline-offset-2">privacy policy</Link>.
       </p>
     </form>
   );

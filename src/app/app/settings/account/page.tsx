@@ -19,6 +19,7 @@ export default async function AccountPage() {
               email={ctx.email}
               fullName={ctx.profile?.full_name ?? ""}
               phone={ctx.profile?.phone ?? ""}
+              emailAlerts={ctx.profile?.email_alerts ?? true}
             />
           </PanelBody>
         </Panel>

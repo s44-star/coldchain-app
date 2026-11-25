@@ -90,7 +90,7 @@ export const config = {
       // Everything except static files, images, and machine-to-machine APIs
       // (sensor ingestion and payment webhooks authenticate on their own).
       source:
-        "/((?!_next/static|_next/image|favicon.ico|icon.svg|robots.txt|api/ingest|api/webhooks|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
+        "/((?!_next/static|_next/image|favicon.ico|icon.svg|robots.txt|api/ingest|api/webhooks|api/cron|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|txt|xml)$).*)",
       missing: [
         { type: "header", key: "next-router-prefetch" },
         { type: "header", key: "purpose", value: "prefetch" },

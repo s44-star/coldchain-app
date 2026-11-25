@@ -51,6 +51,12 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
                 {CONTACT_EMAIL}
               </a>
             </p>
+            <p className="flex flex-wrap gap-x-4 gap-y-1 md:justify-end">
+              <Link href="/terms" className="hover:text-ink">Terms</Link>
+              <Link href="/privacy" className="hover:text-ink">Privacy</Link>
+              <Link href="/refunds" className="hover:text-ink">Refunds and cancellation</Link>
+              <Link href="/contact" className="hover:text-ink">Contact</Link>
+            </p>
             <p>© {YEAR} LexConv</p>
           </div>
         </div>

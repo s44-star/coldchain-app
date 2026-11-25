@@ -4,6 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { signOut } from "@/app/(auth)/actions";
+import { switchCompany } from "./company-switch/actions";
 import { AppNav } from "@/components/app/app-nav";
 import { Logo } from "@/components/brand/logo";
 import { roleLabels } from "@/components/status";
@@ -74,9 +75,32 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           </form>
         </div>
 
-        <div className="hidden px-5 pb-4 lg:block">
-          <p className="type-small font-semibold text-ink">{ctx.company.companyName}</p>
-          <p className="type-caption text-ink-muted">{roleLabels[ctx.role]}</p>
+        <div className="px-5 pb-3 lg:pb-4">
+          {ctx.memberships.length > 1 ? (
+            <form action={switchCompany} className="flex items-center gap-2">
+              <label htmlFor="company-switch" className="sr-only">
+                Company
+              </label>
+              <select
+                id="company-switch"
+                name="companyId"
+                defaultValue={ctx.company.companyId}
+                className="h-9 min-w-0 flex-1 rounded-control border border-line-strong bg-surface px-2 type-small text-ink"
+              >
+                {ctx.memberships.map((m) => (
+                  <option key={m.companyId} value={m.companyId}>
+                    {m.companyName}
+                  </option>
+                ))}
+              </select>
+              <button type="submit" className="h-9 rounded-control border border-line-strong px-3 type-small text-ink hover:bg-surface-2">
+                Switch
+              </button>
+            </form>
+          ) : (
+            <p className="hidden type-small font-semibold text-ink lg:block">{ctx.company.companyName}</p>
+          )}
+          <p className="hidden type-caption text-ink-muted lg:block">{roleLabels[ctx.role]}</p>
         </div>
 
         <AppNav items={nav} />
