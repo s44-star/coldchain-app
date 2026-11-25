@@ -215,6 +215,10 @@
   body {
     font-family: var(--font-sans);
     min-height: 100dvh;
+    /* Never let anything widen the page sideways: phones would zoom the
+       whole app out and taps would land on the wrong element. Wide content
+       (tables, code) scrolls inside its own box instead. */
+    overflow-x: clip;
   }
 
   :focus-visible {

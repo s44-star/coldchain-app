@@ -39,6 +39,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  // Pinch-zoom in stays available; the page is never zoomed out to fit overflow.
+  minimumScale: 1,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f5f7f8" },
     { media: "(prefers-color-scheme: dark)", color: "#0d1820" },
