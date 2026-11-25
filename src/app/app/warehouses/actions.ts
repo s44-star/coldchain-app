@@ -58,7 +58,8 @@ function toRow(d: z.infer<typeof warehouseSchema>) {
   };
 }
 
-function friendly(code: string | undefined, fallback: string): string {
+function friendly(code: string | undefined, fallback: string, message?: string): string {
+  if (code === "53400" && message) return message;
   if (code === "23505") return "A warehouse with this name or code already exists.";
   if (code === "42501") return "You do not have permission to do this.";
   return fallback;
@@ -75,7 +76,7 @@ export async function createWarehouse(_prev: FormState, formData: FormData): Pro
     .insert({ ...toRow(parsed.data), company_id: ctx.company.companyId })
     .select("id")
     .single();
-  if (error || !data) return { error: friendly(error?.code, "Could not add the warehouse."), values };
+  if (error || !data) return { error: friendly(error?.code, "Could not add the warehouse.", error?.message), values };
 
   revalidatePath("/app", "layout");
   redirect(`/app/warehouses/${data.id}`);

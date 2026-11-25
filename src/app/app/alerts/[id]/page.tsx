@@ -69,7 +69,14 @@ export default async function AlertPage({ params }: { params: Promise<{ id: stri
       />
       <div className="grid gap-6">
         {a.message ? <p className="type-body text-ink">{a.message}</p> : null}
-        {ctx.role !== "viewer" ? <AlertActions alertId={a.id} status={a.status} /> : null}
+        {ctx.role !== "viewer" ? (
+          <div className="flex flex-wrap items-start gap-4">
+            <AlertActions alertId={a.id} status={a.status} />
+            <Link href={`/app/incidents?alert=${a.id}#report`} className="type-small text-primary underline-offset-4 hover:underline">
+              Report an incident for this alert
+            </Link>
+          </div>
+        ) : null}
         {a.resolution_notes ? (
           <Panel>
             <PanelHeader title="Resolution" />

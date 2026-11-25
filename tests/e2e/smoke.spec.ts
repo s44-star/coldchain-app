@@ -126,6 +126,11 @@ test.describe("sign-in screens", () => {
     await expect(page).toHaveURL(/\/login(\?|$)/);
   });
 
+  test("the super admin panel requires signing in", async ({ page }) => {
+    await page.goto("/admin");
+    await expect(page).toHaveURL(/\/login(\?|$)/);
+  });
+
   test("invalid invitation links explain what to do", async ({ page }) => {
     await page.goto("/invite/not-a-real-token");
     await expect(page.getByText("This invitation link is not valid")).toBeVisible();

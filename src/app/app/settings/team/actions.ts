@@ -48,6 +48,7 @@ export async function inviteMember(_prev: FormState, formData: FormData): Promis
   });
 
   if (error) {
+    if (error.code === "53400") return { error: error.message, values };
     if (error.code === "23505") {
       return { fieldErrors: { email: "There is already an open invitation for this address. Withdraw it first." }, values };
     }

@@ -18,7 +18,11 @@ export const metadata: Metadata = { title: "Overview", robots: { index: false } 
 const NAV = [
   { href: "/app", label: "Overview", exact: true },
   { href: "/app/alerts", label: "Alerts" },
+  { href: "/app/incidents", label: "Incidents" },
   { href: "/app/warehouses", label: "Warehouses" },
+  { href: "/app/maintenance", label: "Maintenance" },
+  { href: "/app/reports", label: "Reports" },
+  { href: "/app/notifications", label: "Notifications" },
   { href: "/app/settings/team", label: "Team" },
   { href: "/app/settings/company", label: "Company" },
   { href: "/app/billing", label: "Billing", ownerOnly: true },
@@ -41,9 +45,16 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const allowedWhenLocked = path.startsWith("/app/billing") || path.startsWith("/app/settings/account");
   if (lockedOut && !allowedWhenLocked) redirect("/app/billing");
 
+  const { count: unread } = await ctx.supabase
+    .from("notifications")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", ctx.userId)
+    .eq("company_id", ctx.company.companyId)
+    .is("read_at", null);
+
   const nav = NAV.filter((item) => !item.ownerOnly || can.manageBilling(ctx.role)).map((item) => ({
     href: item.href,
-    label: item.label,
+    label: item.href === "/app/notifications" && unread ? `${item.label} (${unread})` : item.label,
     exact: item.exact,
     disabled: lockedOut && !(item.href.startsWith("/app/billing") || item.href.startsWith("/app/settings/account")),
   }));
@@ -51,7 +62,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-dvh bg-canvas lg:grid lg:grid-cols-[248px_1fr]">
-      <aside className="border-b border-line bg-surface lg:sticky lg:top-0 lg:h-dvh lg:border-r lg:border-b-0">
+      <aside className="border-b border-line bg-surface print:hidden lg:sticky lg:top-0 lg:h-dvh lg:border-r lg:border-b-0">
         <div className="flex items-center justify-between gap-3 px-5 py-4 lg:py-6">
           <Link href="/app" aria-label="Overview" className="rounded-control">
             <Logo />
@@ -122,7 +133,7 @@ function AccessBanner({ tone, children }: { tone: "info" | "warn"; children: Rea
     <div
       role="status"
       className={cn(
-        "border-b px-5 py-2.5 type-small md:px-8",
+        "border-b px-5 py-2.5 type-small md:px-8 print:hidden",
         tone === "info" ? "border-info/20 bg-info-soft text-ink" : "border-warn/30 bg-warn-soft text-ink",
       )}
     >

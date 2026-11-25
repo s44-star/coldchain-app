@@ -2164,6 +2164,22 @@ export type Database = {
           plan_name: string;
         }[];
       };
+      company_usage: {
+        Args: {
+          p_company_id: string;
+        };
+        Returns: {
+          plan_name: string;
+          warehouses: number;
+          max_warehouses: number;
+          zones: number;
+          max_zones: number;
+          sensors: number;
+          max_sensors: number;
+          users: number;
+          max_users: number;
+        }[];
+      };
       create_company: {
         Args: {
           p_name: string;
@@ -2205,6 +2221,10 @@ export type Database = {
         };
         Returns: string;
       };
+      run_sweeps: {
+        Args: Record<PropertyKey, never>;
+        Returns: Json;
+      };
       simulate_readings: {
         Args: {
           p_sensor_id: string;
@@ -2212,6 +2232,10 @@ export type Database = {
           p_excursion?: boolean;
         };
         Returns: Json;
+      };
+      sweep_maintenance: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
       };
       sweep_sensors: {
         Args: Record<PropertyKey, never>;
