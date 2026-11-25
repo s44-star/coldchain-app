@@ -33,6 +33,7 @@ export const metadata: Metadata = {
   applicationName: "ColdChain OS",
   authors: [{ name: "LexConv" }],
   formatDetection: { telephone: false },
+  other: { google: "notranslate" },
 };
 
 export const viewport: Viewport = {
@@ -54,7 +55,9 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
   headerList.get("x-nonce");
 
   return (
-    <html lang="en" data-theme={theme} className={archivo.variable} suppressHydrationWarning>
+    // translate="no": browser auto-translation rewrites text nodes React owns,
+    // which breaks navigation and buttons. The product UI is English.
+    <html lang="en" translate="no" data-theme={theme} className={archivo.variable} suppressHydrationWarning>
       <body className="bg-canvas text-ink antialiased">{children}</body>
     </html>
   );

@@ -22,6 +22,7 @@ test.describe("landing page", () => {
       /^mailto:ceo@lexconv\.com/,
     );
     await expect(page.locator("figure figcaption")).toContainText("Illustration");
+    await expect(page.locator("html")).toHaveAttribute("translate", "no");
     await expect(page.getByRole("link", { name: "Start free trial" })).toHaveAttribute("href", "/signup");
 
     // Hydration finished = Next.js scripts ran, so the nonce was accepted.
