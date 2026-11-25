@@ -11,7 +11,7 @@ import { requirePlatformAdmin } from "@/lib/auth/admin";
 import { countryName } from "@/lib/countries";
 import { formatDateTime } from "@/lib/format";
 import { formatMoney } from "@/lib/money";
-import { extendTrial, setCompanyStatus, setDemo } from "../../actions";
+import { deleteCompany, extendTrial, setCompanyStatus, setDemo } from "../../actions";
 
 const day = (iso: string | null) => (iso ? (formatDateTime(iso).split(",")[0] ?? "") : "never");
 const limit = (used: number, max: number | null) => `${used} of ${max ?? "unlimited"}`;
@@ -146,6 +146,32 @@ export default async function AdminCompanyPage({ params }: { params: Promise<{ i
               })}
             </TBody>
           </Table>
+        </Panel>
+
+        <Panel className="border-critical/40">
+          <PanelHeader title="Delete company" description="Removes the company and all its data permanently. Companies with paid invoices cannot be deleted." />
+          <PanelBody>
+            <ActionForm
+              action={deleteCompany}
+              hidden={{ id }}
+              className="grid gap-3"
+              confirm={`Delete ${c.name} and all its data? This cannot be undone.`}
+            >
+              <label htmlFor="confirm-name" className="type-small text-ink">
+                Type <strong>{c.name}</strong> to confirm
+              </label>
+              <Input id="confirm-name" name="confirm" autoComplete="off" className="max-w-md" />
+              <label className="flex items-center gap-2 type-small text-ink">
+                <input type="checkbox" name="deleteUsers" defaultChecked className="size-4 accent-[var(--critical)]" />
+                Also delete member accounts that are not in any other company
+              </label>
+              <div>
+                <SubmitButton variant="danger" pendingLabel="Deleting">
+                  Delete company permanently
+                </SubmitButton>
+              </div>
+            </ActionForm>
+          </PanelBody>
         </Panel>
 
         <Panel>
