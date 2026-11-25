@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/app/page-header";
-import { CheckIcon, SensorIcon } from "@/components/icons";
+import { CheckIcon } from "@/components/icons";
 import { buttonClasses } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
 import { Panel, PanelBody, PanelHeader } from "@/components/ui/panel";
 import { getAppContext } from "@/lib/auth/context";
 import { can } from "@/lib/auth/roles";
 import { cn } from "@/lib/utils";
+import { LiveZones } from "./live-zones";
 
 export default async function OverviewPage() {
   const ctx = await getAppContext();
@@ -75,10 +75,7 @@ export default async function OverviewPage() {
           </PanelBody>
         </Panel>
 
-        <EmptyState icon={<SensorIcon />} title="No warehouses yet">
-          Warehouses, storage zones and live sensor readings are the next part of ColdChain OS to go live. They will appear
-          here as soon as they are released.
-        </EmptyState>
+        <LiveZones />
       </div>
     </>
   );

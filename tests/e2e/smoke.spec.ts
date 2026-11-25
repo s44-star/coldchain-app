@@ -122,7 +122,7 @@ test.describe("sign-in screens", () => {
   });
 
   test("the app requires signing in", async ({ page }) => {
-    await page.goto("/app/settings/team");
+    await page.goto("/app/warehouses");
     await expect(page).toHaveURL(/\/login(\?|$)/);
   });
 
@@ -135,6 +135,11 @@ test.describe("sign-in screens", () => {
 test("payment webhook refuses requests when not configured or unsigned", async ({ request }) => {
   const response = await request.post("/api/webhooks/razorpay", { data: { event: "payment.captured" } });
   expect([400, 503]).toContain(response.status());
+});
+
+test("sensor ingestion refuses requests without a device key", async ({ request }) => {
+  const response = await request.post("/api/ingest/readings", { data: { temperature_c: 4.2 } });
+  expect([401, 503]).toContain(response.status());
 });
 
 test.describe("health endpoint", () => {

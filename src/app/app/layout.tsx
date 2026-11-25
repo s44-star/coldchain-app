@@ -17,6 +17,8 @@ export const metadata: Metadata = { title: "Overview", robots: { index: false } 
 
 const NAV = [
   { href: "/app", label: "Overview", exact: true },
+  { href: "/app/alerts", label: "Alerts" },
+  { href: "/app/warehouses", label: "Warehouses" },
   { href: "/app/settings/team", label: "Team" },
   { href: "/app/settings/company", label: "Company" },
   { href: "/app/billing", label: "Billing", ownerOnly: true },
