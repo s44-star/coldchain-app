@@ -48,7 +48,7 @@ export default async function AdminPlansPage() {
                     </Field>
                   ))}
                 </div>
-                <SubmitButton pendingLabel="Saving">Save {p.name}</SubmitButton>
+                <SubmitButton pendingLabel="Saving">{`Save ${p.name}`}</SubmitButton>
               </ActionForm>
             </PanelBody>
           </Panel>

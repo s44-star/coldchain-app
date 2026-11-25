@@ -28,7 +28,7 @@ export function NewIncidentForm({
 }: {
   warehouses: Option[];
   zones: (Option & { warehouseId: string })[];
-  defaults: { warehouseId?: string; zoneId?: string; alertId?: string; title?: string; severity?: string };
+  defaults: { warehouseId?: string; zoneId?: string; alertId?: string; title?: string; severity?: string; description?: string };
 }) {
   const [state, action] = useActionState(createIncident, init);
   const v = { ...defaults, ...state.values };
