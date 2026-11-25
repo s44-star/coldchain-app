@@ -2185,6 +2185,14 @@ export type Database = {
           state: string;
         }[];
       };
+      ingest_readings: {
+        Args: {
+          p_sensor_id: string;
+          p_readings: Json;
+          p_source?: Database["public"]["Enums"]["reading_source"];
+        };
+        Returns: Json;
+      };
       purge_rate_limits: {
         Args: Record<PropertyKey, never>;
         Returns: number;
@@ -2196,6 +2204,18 @@ export type Database = {
           p_method?: string;
         };
         Returns: string;
+      };
+      simulate_readings: {
+        Args: {
+          p_sensor_id: string;
+          p_hours?: number;
+          p_excursion?: boolean;
+        };
+        Returns: Json;
+      };
+      sweep_sensors: {
+        Args: Record<PropertyKey, never>;
+        Returns: number;
       };
       transfer_ownership: {
         Args: {
