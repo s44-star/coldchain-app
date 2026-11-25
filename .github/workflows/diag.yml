@@ -1,0 +1,18 @@
+name: Diagnose navigation
+on:
+  push:
+    branches: [diag-nav]
+jobs:
+  diag:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci --no-audit --no-fund
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/diag/nav.mjs
+        env:
+          BASE_URL: https://coldchain-app-z971.vercel.app
