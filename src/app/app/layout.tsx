@@ -120,7 +120,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
             )}
           </AccessBanner>
         ) : null}
-        <main id="main" className="mx-auto w-full max-w-5xl px-5 py-8 md:px-8 md:py-10">
+        <main id="main" className="mx-auto w-full max-w-5xl min-w-0 px-5 py-8 md:px-8 md:py-10">
           {children}
         </main>
       </div>
