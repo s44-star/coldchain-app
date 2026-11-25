@@ -62,7 +62,7 @@ export async function proxy(request: NextRequest) {
     // Route protection. Pages check again on the server; this just saves a
     // round trip and keeps signed-in users out of the sign-in screens.
     const path = request.nextUrl.pathname;
-    const isProtected = path === "/app" || path.startsWith("/app/") || path === "/onboarding";
+    const isProtected = path === "/app" || path.startsWith("/app/") || path === "/admin" || path.startsWith("/admin/") || path === "/onboarding";
     const isAuthScreen = path === "/login" || path === "/signup";
     if ((!userId && isProtected) || (userId && isAuthScreen)) {
       const target = request.nextUrl.clone();

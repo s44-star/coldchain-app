@@ -59,7 +59,10 @@ export async function createZone(_prev: FormState, formData: FormData): Promise<
   const { error } = await ctx.supabase
     .from("storage_zones")
     .insert({ ...row(parsed.data), company_id: ctx.company.companyId, warehouse_id: warehouseId });
-  if (error) return { error: error.code === "23505" ? "A zone with this name already exists here." : NO_PERMISSION, values };
+  if (error) {
+    if (error.code === "53400") return { error: error.message, values };
+    return { error: error.code === "23505" ? "A zone with this name already exists here." : NO_PERMISSION, values };
+  }
   revalidatePath(`/app/warehouses/${warehouseId}`);
   return { ok: true, message: `${parsed.data.name} added.` };
 }

@@ -43,6 +43,7 @@ export async function registerSensor(_prev: FormState, formData: FormData): Prom
     })
     .select("id")
     .single();
+  if (error?.code === "53400") return { error: error.message, values };
   if (error || !data) {
     return {
       error: error?.code === "23505" ? "A sensor with this device ID is already registered." : NO_PERMISSION,

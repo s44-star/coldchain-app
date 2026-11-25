@@ -44,7 +44,7 @@ export default async function BillingPage() {
     );
   }
 
-  const [{ data: planRows }, { count: capturedCount }, { data: invoices }] = await Promise.all([
+  const [{ data: planRows }, { count: capturedCount }, { data: invoices }, { data: usageRows }] = await Promise.all([
     ctx.supabase.from("subscription_plans").select("*").eq("is_active", true).eq("is_public", true).order("sort_order"),
     ctx.supabase
       .from("payment_records")
@@ -56,7 +56,9 @@ export default async function BillingPage() {
       .select("id, number, issued_at, total_cents, currency, status")
       .eq("company_id", ctx.company.companyId)
       .order("issued_at", { ascending: false }),
+    ctx.supabase.rpc("company_usage", { p_company_id: ctx.company.companyId }),
   ]);
+  const usage = usageRows?.[0];
 
   const plans: PlanView[] = (planRows ?? []).map((p) => ({
     code: p.code,
@@ -79,6 +81,25 @@ export default async function BillingPage() {
         <Callout tone={status.tone} title={status.title}>
           {state === "locked" ? "Choose a plan to restore access for your whole team. Your data is kept." : null}
         </Callout>
+
+        {usage ? (
+          <dl className="grid grid-cols-2 gap-4 rounded-panel border border-line bg-surface p-5 sm:grid-cols-4">
+            {[
+              ["Warehouses", usage.warehouses, usage.max_warehouses],
+              ["Zones", usage.zones, usage.max_zones],
+              ["Sensors", usage.sensors, usage.max_sensors],
+              ["Users", usage.users, usage.max_users],
+            ].map(([label, used, max]) => (
+              <div key={String(label)}>
+                <dt className="type-caption text-ink-muted">{label}</dt>
+                <dd className="type-small font-medium tabular text-ink">
+                  {used} of {max ?? "unlimited"}
+                </dd>
+              </div>
+            ))}
+            <p className="col-span-full type-caption text-ink-muted">Limits of the {usage.plan_name} plan{state === "trial" ? " during your trial" : ""}.</p>
+          </dl>
+        ) : null}
 
         <PlanPicker
           plans={plans}
