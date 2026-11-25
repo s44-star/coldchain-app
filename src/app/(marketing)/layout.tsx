@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { Logo } from "@/components/brand/logo";
 import { buttonClasses } from "@/components/ui/button";
-import { CONTACT_EMAIL, demoMailto } from "@/lib/site";
+import { CONTACT_EMAIL } from "@/lib/site";
 
 const YEAR = new Date().getFullYear();
 
@@ -28,9 +28,12 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           <a href="#contact" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
             Contact
           </a>
-          <a href={demoMailto} className={buttonClasses({ variant: "primary", size: "sm", className: "ml-2" })}>
-            Book a demo
-          </a>
+          <Link href="/login" className="rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink">
+            Sign in
+          </Link>
+          <Link href="/signup" className={buttonClasses({ variant: "primary", size: "sm", className: "ml-1" })}>
+            Start free trial
+          </Link>
         </nav>
       </header>
 

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Thermograph } from "@/components/marketing/thermograph";
 import { buttonClasses } from "@/components/ui/button";
 import { CONTACT_EMAIL, demoMailto } from "@/lib/site";
@@ -44,11 +45,11 @@ export default function HomePage() {
           its limits, and keeps the evidence your auditors ask for.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <a href={demoMailto} className={buttonClasses({ size: "lg" })}>
+          <Link href="/signup" className={buttonClasses({ size: "lg" })}>
+            Start 14-day free trial
+          </Link>
+          <a href={demoMailto} className={buttonClasses({ variant: "secondary", size: "lg" })}>
             Book a demo
-          </a>
-          <a href="#how-it-works" className={buttonClasses({ variant: "secondary", size: "lg" })}>
-            See how it works
           </a>
         </div>
 

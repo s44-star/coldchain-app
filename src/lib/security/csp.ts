@@ -13,7 +13,7 @@ export type CspOptions = {
 const RAZORPAY = {
   script: "https://checkout.razorpay.com",
   api: "https://api.razorpay.com",
-  telemetry: "https://lumberjack.razorpay.com",
+  any: "https://*.razorpay.com",
 };
 
 function supabaseOrigins(supabaseUrl?: string | null): { http: string; ws: string } {
@@ -43,10 +43,10 @@ export function buildCsp({ nonce, supabaseUrl, isDev = false }: CspOptions): str
     ],
     // React style attributes need inline styles; scripts stay nonce-only.
     "style-src": ["'self'", "'unsafe-inline'"],
-    "img-src": ["'self'", "blob:", "data:", supabase.http],
+    "img-src": ["'self'", "blob:", "data:", supabase.http, RAZORPAY.any],
     "font-src": ["'self'"],
-    "connect-src": ["'self'", supabase.http, supabase.ws, RAZORPAY.api, RAZORPAY.telemetry],
-    "frame-src": [RAZORPAY.api, RAZORPAY.script],
+    "connect-src": ["'self'", supabase.http, supabase.ws, RAZORPAY.any],
+    "frame-src": [RAZORPAY.any],
     "worker-src": ["'self'", "blob:"],
     "frame-ancestors": ["'none'"],
     "form-action": ["'self'"],
