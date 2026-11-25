@@ -35,22 +35,19 @@ export const getMemberships = cache(async (): Promise<Membership[]> => {
   if (!session) return [];
   const { supabase, userId } = session;
 
+  // One round trip: memberships with their company names embedded.
   const { data: rows, error } = await supabase
     .from("company_members")
-    .select("company_id, role, created_at")
+    .select("company_id, role, created_at, companies(name)")
     .eq("user_id", userId)
     .order("created_at", { ascending: true });
   if (error) throw new Error(`Could not load memberships: ${error.message}`);
-  if (!rows?.length) return [];
 
-  const { data: companies, error: companyError } = await supabase
-    .from("companies")
-    .select("id, name")
-    .in("id", rows.map((r) => r.company_id));
-  if (companyError) throw new Error(`Could not load companies: ${companyError.message}`);
-
-  const names = new Map((companies ?? []).map((c) => [c.id, c.name]));
-  return rows.map((r) => ({ companyId: r.company_id, companyName: names.get(r.company_id) ?? "Company", role: r.role }));
+  return (rows ?? []).map((r) => {
+    const company = r.companies as { name: string } | { name: string }[] | null;
+    const name = Array.isArray(company) ? company[0]?.name : company?.name;
+    return { companyId: r.company_id, companyName: name ?? "Company", role: r.role };
+  });
 });
 
 export type AppContext = Awaited<ReturnType<typeof loadAppContext>>;

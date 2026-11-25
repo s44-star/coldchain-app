@@ -4,6 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { signOut } from "@/app/(auth)/actions";
+import { AppNav } from "@/components/app/app-nav";
 import { Logo } from "@/components/brand/logo";
 import { roleLabels } from "@/components/status";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
@@ -38,8 +39,12 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const allowedWhenLocked = path.startsWith("/app/billing") || path.startsWith("/app/settings/account");
   if (lockedOut && !allowedWhenLocked) redirect("/app/billing");
 
-  const nav = NAV.filter((item) => !item.ownerOnly || can.manageBilling(ctx.role));
-  const isActive = (href: string, exact?: boolean) => (exact ? path === href : path === href || path.startsWith(`${href}/`));
+  const nav = NAV.filter((item) => !item.ownerOnly || can.manageBilling(ctx.role)).map((item) => ({
+    href: item.href,
+    label: item.label,
+    exact: item.exact,
+    disabled: lockedOut && !(item.href.startsWith("/app/billing") || item.href.startsWith("/app/settings/account")),
+  }));
   const remaining = daysLeft(ctx.access.endsAt);
 
   return (
@@ -61,32 +66,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           <p className="type-caption text-ink-muted">{roleLabels[ctx.role]}</p>
         </div>
 
-        <nav aria-label="App" className="overflow-x-auto px-3 pb-3 lg:px-3">
-          <ul className="flex gap-1 lg:grid">
-            {nav.map((item) => {
-              const active = isActive(item.href, item.exact);
-              const disabled = lockedOut && !(item.href.startsWith("/app/billing") || item.href.startsWith("/app/settings/account"));
-              return (
-                <li key={item.href}>
-                  {disabled ? (
-                    <span className="block rounded-control px-3 py-2 type-small whitespace-nowrap text-ink-subtle">{item.label}</span>
-                  ) : (
-                    <Link
-                      href={item.href}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "block rounded-control px-3 py-2 type-small whitespace-nowrap transition-colors",
-                        active ? "bg-primary-soft font-medium text-primary" : "text-ink-muted hover:bg-surface-2 hover:text-ink",
-                      )}
-                    >
-                      {item.label}
-                    </Link>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
+        <AppNav items={nav} />
 
         <div className="hidden gap-3 border-t border-line px-5 py-4 lg:absolute lg:inset-x-0 lg:bottom-0 lg:grid">
           <p className="truncate type-caption text-ink-muted" title={ctx.email}>
