@@ -1,0 +1,278 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   Glacier — ColdChain OS design tokens
+   Light is the app default; dark is used by the marketing site and by users
+   who pick it. Every component reads these variables, so a nested
+   [data-theme] switches a whole subtree.
+   ============================================================================= */
+
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --canvas: #f5f7f8;
+  --surface: #ffffff;
+  --surface-2: #edf1f3;
+  --ink: #10202b;
+  --ink-muted: #4e5f6b;
+  --ink-subtle: #6b7c87;
+  --line: #dce3e7;
+  --line-strong: #c3cdd3;
+  --primary: #165e78;
+  --primary-hover: #114c61;
+  --primary-ink: #ffffff;
+  --primary-soft: #e3f0f5;
+  --ok: #17785f;
+  --ok-soft: #e2f3ee;
+  --warn: #9a6114;
+  --warn-soft: #fbf0de;
+  --critical: #b4302a;
+  --critical-soft: #fbe7e5;
+  --info: #2b64a0;
+  --info-soft: #e5eef8;
+  --focus: #2e8fb3;
+  --band: rgb(22 94 120 / 0.08);
+  --shadow-raise: 0 1px 2px rgb(16 32 43 / 0.06), 0 4px 16px -8px rgb(16 32 43 / 0.12);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --canvas: #0d1820;
+  --surface: #13232e;
+  --surface-2: #1a2e3b;
+  --ink: #e4edf1;
+  --ink-muted: #9db0bc;
+  --ink-subtle: #7d93a0;
+  --line: #22394a;
+  --line-strong: #2f4b5e;
+  --primary: #7ccbe2;
+  --primary-hover: #9bd8ea;
+  --primary-ink: #0d1820;
+  --primary-soft: rgb(124 203 226 / 0.12);
+  --ok: #4fc59e;
+  --ok-soft: rgb(79 197 158 / 0.14);
+  --warn: #f0ae45;
+  --warn-soft: rgb(240 174 69 / 0.14);
+  --critical: #f2766e;
+  --critical-soft: rgb(242 118 110 / 0.14);
+  --info: #7fb0e6;
+  --info-soft: rgb(127 176 230 / 0.14);
+  --focus: #7ccbe2;
+  --band: rgb(124 203 226 / 0.07);
+  --shadow-raise: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    color-scheme: dark;
+    --canvas: #0d1820;
+    --surface: #13232e;
+    --surface-2: #1a2e3b;
+    --ink: #e4edf1;
+    --ink-muted: #9db0bc;
+    --ink-subtle: #7d93a0;
+    --line: #22394a;
+    --line-strong: #2f4b5e;
+    --primary: #7ccbe2;
+    --primary-hover: #9bd8ea;
+    --primary-ink: #0d1820;
+    --primary-soft: rgb(124 203 226 / 0.12);
+    --ok: #4fc59e;
+    --ok-soft: rgb(79 197 158 / 0.14);
+    --warn: #f0ae45;
+    --warn-soft: rgb(240 174 69 / 0.14);
+    --critical: #f2766e;
+    --critical-soft: rgb(242 118 110 / 0.14);
+    --info: #7fb0e6;
+    --info-soft: rgb(127 176 230 / 0.14);
+    --focus: #7ccbe2;
+    --band: rgb(124 203 226 / 0.07);
+    --shadow-raise: 0 1px 2px rgb(0 0 0 / 0.3), 0 8px 24px -12px rgb(0 0 0 / 0.5);
+  }
+}
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-ink: var(--primary-ink);
+  --color-primary-soft: var(--primary-soft);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-critical: var(--critical);
+  --color-critical-soft: var(--critical-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-focus: var(--focus);
+  --color-band: var(--band);
+  --shadow-raise: var(--shadow-raise);
+  --font-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme {
+  --radius-control: 6px;
+  --radius-panel: 12px;
+}
+
+/* -----------------------------------------------------------------------------
+   Type scale (16 px body; 12 · 14 · 16 · 18 · 21 · 24 · 36 · 48+)
+   Archivo's width axis carries hierarchy: wide for headings, normal for text.
+   ----------------------------------------------------------------------------- */
+@utility type-display {
+  font-size: clamp(2.75rem, 1.6rem + 4.6vw, 5.25rem);
+  line-height: 0.98;
+  font-weight: 300;
+  font-stretch: 125%;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+@utility type-title {
+  font-size: clamp(1.75rem, 1.3rem + 1.6vw, 2.25rem);
+  line-height: 1.1;
+  font-weight: 350;
+  font-stretch: 118%;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+@utility type-h1 {
+  font-size: 1.5rem;
+  line-height: 1.2;
+  font-weight: 500;
+  font-stretch: 112%;
+  letter-spacing: -0.005em;
+}
+
+@utility type-h2 {
+  font-size: 1.3125rem;
+  line-height: 1.25;
+  font-weight: 500;
+  font-stretch: 112%;
+}
+
+@utility type-h3 {
+  font-size: 1rem;
+  line-height: 1.35;
+  font-weight: 600;
+}
+
+@utility type-lead {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+@utility type-body {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+@utility type-small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+@utility type-caption {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+}
+
+/* Sensor values: tabular figures so columns of readings line up. */
+@utility type-reading {
+  font-size: 2.25rem;
+  line-height: 1;
+  font-weight: 450;
+  font-stretch: 108%;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@layer base {
+  html {
+    background: var(--canvas);
+    color: var(--ink);
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    min-height: 100dvh;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* The marketing site is dark even when the app theme is light: match the
+     page background so overscroll never flashes white. */
+  html:has([data-surface="marketing"]),
+  html:has([data-surface="marketing"]) body {
+    background-color: #0d1820;
+    color-scheme: dark;
+  }
+
+  ::selection {
+    background: var(--primary-soft);
+    color: var(--ink);
+  }
+}
+
+/* -----------------------------------------------------------------------------
+   Hero thermograph: one orchestrated moment. The trace is revealed left to
+   right like a chart recorder, then the excursion note appears. Nothing
+   moves for users who prefer reduced motion.
+   ----------------------------------------------------------------------------- */
+@keyframes trace-wipe {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes note-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.trace-wipe {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: trace-wipe 2.8s cubic-bezier(0.45, 0, 0.2, 1) both;
+}
+
+.trace-note {
+  animation: note-in 0.5s ease-out 2.4s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trace-wipe,
+  .trace-note {
+    animation: none;
+  }
+}
