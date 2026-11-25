@@ -12,7 +12,7 @@ const securityHeaders = [
   { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
   {
     key: "Permissions-Policy",
-    value: 'camera=(), microphone=(), geolocation=(), browsing-topics=(), payment=(self "https://api.razorpay.com")',
+    value: 'camera=(), microphone=(), geolocation=(), payment=(self "https://api.razorpay.com")',
   },
 ];
 
