@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { PageHeader } from "@/components/app/page-header";
 import { Badge, type Tone } from "@/components/ui/badge";
+import { Callout } from "@/components/ui/callout";
 import { Panel } from "@/components/ui/panel";
 import { TBody, THead, Table, Td, Th, Tr } from "@/components/ui/table";
 import { requirePlatformAdmin } from "@/lib/auth/admin";
@@ -10,8 +11,12 @@ import { formatDateTime } from "@/lib/format";
 const STATUS_TONE: Record<string, Tone> = { trial: "info", active: "ok", past_due: "warn", suspended: "critical", cancelled: "neutral" };
 const day = (iso: string | null) => (iso ? (formatDateTime(iso).split(",")[0] ?? "") : "");
 
-export default async function AdminCompaniesPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const { q = "" } = await searchParams;
+export default async function AdminCompaniesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; deleted?: string; users?: string }>;
+}) {
+  const { q = "", deleted, users } = await searchParams;
   const { supabase } = await requirePlatformAdmin();
 
   let query = supabase
@@ -37,6 +42,11 @@ export default async function AdminCompaniesPage({ searchParams }: { searchParam
   return (
     <>
       <PageHeader title="Companies" description={`${companies?.length ?? 0} shown`} />
+      {deleted ? (
+        <div className="mb-6">
+          <Callout tone="ok" title={`${deleted} was deleted${users && users !== "0" ? `, with ${users} user account(s)` : ""}.`} />
+        </div>
+      ) : null}
       <form className="mb-6 flex gap-2" action="/admin">
         <label htmlFor="q" className="sr-only">
           Search companies
