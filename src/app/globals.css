@@ -231,6 +231,12 @@
     color-scheme: dark;
   }
 
+  /* Wide content (code, long tables) scrolls inside its own box instead of
+     widening the page, which makes phones zoom out. */
+  pre {
+    contain: inline-size;
+  }
+
   ::selection {
     background: var(--primary-soft);
     color: var(--ink);

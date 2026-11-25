@@ -129,7 +129,7 @@ export default async function SensorPage({ params }: { params: Promise<{ id: str
                   Send an HTTPS <strong className="text-ink">POST</strong> to the address below with the device key in the{" "}
                   <code className="text-ink">Authorization</code> header. Readings appear within seconds.
                 </p>
-                <pre className="overflow-x-auto rounded-control bg-surface-2 p-4 font-mono text-xs leading-relaxed text-ink">
+                <pre className="overflow-x-auto rounded-control bg-surface-2 p-4 font-mono text-xs leading-relaxed text-ink [contain:inline-size]">
 {`POST ${endpoint}
 Authorization: Bearer <device key>
 Content-Type: application/json
