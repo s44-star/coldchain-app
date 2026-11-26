@@ -7,7 +7,8 @@ export default function PrivacyPage() {
   return (
     <LegalPage title="Privacy policy" updated="26 November 2026">
       <p>
-        This policy explains how <strong>LexConv</strong>, United Kingdom, handles personal data in ColdChain OS. For data your
+        This policy explains how <strong>LexConv</strong> handles personal data in ColdChain OS. LexConv in India serves
+        customers in India; LexConv, United Kingdom, serves all other customers. For data your
         company enters about its own staff and operations, your company is the controller and we act as its processor. For
         account and billing data, we are the controller. Contact: <a href="mailto:ceo@lexconv.com">ceo@lexconv.com</a>.
       </p>
@@ -49,7 +50,9 @@ export default function PrivacyPage() {
       <p>
         You can ask to access, correct, export or delete your personal data, or object to its use, by e-mailing
         <a href="mailto:ceo@lexconv.com"> ceo@lexconv.com</a>. If your company manages your account, we may refer the request to
-        it. You can also complain to your data protection authority (in the UK, the ICO).
+        it. You can also complain to your data protection authority: in the UK, the ICO; in the EU, your national authority; in
+        India, the Data Protection Board under the Digital Personal Data Protection Act, 2023, after first contacting us. Our
+        grievance contact for India is the same address.
       </p>
 
       <h2>Cookies</h2>

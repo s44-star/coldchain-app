@@ -35,7 +35,7 @@ export default function RefundsPage() {
       <h2>How refunds are paid</h2>
       <p>
         Approved refunds are made to the original payment method through Razorpay, usually within 5 to 10 working days, in the
-        currency you paid.
+        currency you paid (rupees or US dollars).
       </p>
 
       <h2>Contact</h2>

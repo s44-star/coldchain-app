@@ -47,8 +47,8 @@ export async function setDemo(_prev: FormState, formData: FormData): Promise<For
 const dollars = z
   .string()
   .trim()
-  .transform((v) => (v === "" ? null : Math.round(Number(v.replace(/[$,]/g, "")) * 100)))
-  .refine((v) => v === null || (Number.isInteger(v) && v >= 0), "Enter an amount in dollars");
+  .transform((v) => (v === "" ? null : Math.round(Number(v.replace(/[$₹,\s]/g, "")) * 100)))
+  .refine((v) => v === null || (Number.isInteger(v) && v >= 0), "Enter an amount, for example 149 or 4999");
 const limit = z
   .string()
   .trim()
@@ -165,4 +165,27 @@ export async function saveSetting(_prev: FormState, formData: FormData): Promise
   if (error) return { error: "Could not save the setting." };
   revalidatePath("/admin/settings");
   return { ok: true, message: "Saved." };
+}
+
+const sellerSchema = z.object({
+  key: z.enum(["seller_in", "seller_global"]),
+  name: z.string().trim().min(2, "Enter the business name").max(120),
+  address: z.string().trim().max(400),
+  email: z.string().trim().email("Enter a valid e-mail"),
+  taxNote: z.string().trim().max(200),
+});
+
+/** Seller details printed on new invoices; issued invoices keep their copy. */
+export async function saveSeller(_prev: FormState, formData: FormData): Promise<FormState> {
+  const { supabase } = await requirePlatformAdmin();
+  const parsed = sellerSchema.safeParse(Object.fromEntries(["key", "name", "address", "email", "taxNote"].map((k) => [k, String(formData.get(k) ?? "")])));
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the details." };
+  const d = parsed.data;
+  const { error } = await supabase
+    .from("app_settings")
+    .update({ value: { name: d.name, address: d.address, email: d.email, tax_note: d.taxNote } })
+    .eq("key", d.key);
+  if (error) return { error: "Could not save the details." };
+  revalidatePath("/admin/settings");
+  return { ok: true, message: "Saved. New invoices use these details." };
 }

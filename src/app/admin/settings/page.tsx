@@ -3,10 +3,10 @@ import { PageHeader } from "@/components/app/page-header";
 import { ActionForm } from "@/components/forms/action-form";
 import { SubmitButton } from "@/components/forms/form-parts";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/form";
+import { Field, Input, Textarea } from "@/components/ui/form";
 import { Panel, PanelBody, PanelHeader } from "@/components/ui/panel";
 import { requirePlatformAdmin } from "@/lib/auth/admin";
-import { saveSetting } from "../actions";
+import { saveSeller, saveSetting } from "../actions";
 
 export const metadata: Metadata = { title: "Settings" };
 
@@ -59,6 +59,37 @@ export default async function AdminSettingsPage() {
             ))}
           </PanelBody>
         </Panel>
+
+        {[
+          { key: "seller_in", title: "Seller on rupee invoices (India)" },
+          { key: "seller_global", title: "Seller on dollar invoices (rest of the world)" },
+        ].map((block) => {
+          const seller = (value(block.key) ?? {}) as Record<string, string>;
+          return (
+            <Panel key={block.key}>
+              <PanelHeader title={block.title} description="Printed on every new invoice. Invoices already issued keep their details." />
+              <PanelBody>
+                <ActionForm action={saveSeller} hidden={{ key: block.key }} className="grid items-stretch gap-4">
+                  <Field id={`${block.key}-name`} label="Business name">
+                    <Input id={`${block.key}-name`} name="name" defaultValue={seller.name ?? ""} required />
+                  </Field>
+                  <Field id={`${block.key}-address`} label="Address" hint="One line per row, as it should print.">
+                    <Textarea id={`${block.key}-address`} name="address" rows={3} defaultValue={seller.address ?? ""} />
+                  </Field>
+                  <Field id={`${block.key}-email`} label="E-mail">
+                    <Input id={`${block.key}-email`} name="email" type="email" defaultValue={seller.email ?? ""} required />
+                  </Field>
+                  <Field id={`${block.key}-tax`} label="Tax line" hint="For example: Not registered under GST. Or your GSTIN once registered.">
+                    <Input id={`${block.key}-tax`} name="taxNote" defaultValue={seller.tax_note ?? ""} />
+                  </Field>
+                  <div>
+                    <SubmitButton pendingLabel="Saving">Save seller details</SubmitButton>
+                  </div>
+                </ActionForm>
+              </PanelBody>
+            </Panel>
+          );
+        })}
 
         <Panel>
           <PanelHeader title="Connections" description="Shown as set or missing only. Values never appear here." />

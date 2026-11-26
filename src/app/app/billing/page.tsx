@@ -10,6 +10,7 @@ import { getAppContext } from "@/lib/auth/context";
 import { can } from "@/lib/auth/roles";
 import { formatDateTime } from "@/lib/format";
 import { formatMoney } from "@/lib/money";
+import { marketForCountry } from "@/lib/market";
 import { razorpayConfig } from "@/lib/razorpay";
 import { PlanPicker, type PlanView } from "./plan-picker";
 
@@ -44,8 +45,17 @@ export default async function BillingPage() {
     );
   }
 
+  const { data: company } = await ctx.supabase.from("companies").select("country_code").eq("id", ctx.company.companyId).maybeSingle();
+  const market = marketForCountry(company?.country_code);
+
   const [{ data: planRows }, { count: capturedCount }, { data: invoices }, { data: usageRows }] = await Promise.all([
-    ctx.supabase.from("subscription_plans").select("*").eq("is_active", true).eq("is_public", true).order("sort_order"),
+    ctx.supabase
+      .from("subscription_plans")
+      .select("*")
+      .eq("is_active", true)
+      .eq("is_public", true)
+      .eq("market", market)
+      .order("sort_order"),
     ctx.supabase
       .from("payment_records")
       .select("id", { count: "exact", head: true })
@@ -107,6 +117,7 @@ export default async function BillingPage() {
           setupPaid={(capturedCount ?? 0) > 0}
           paymentsEnabled={razorpayConfig() !== null}
           currentPlan={state === "active" || state === "grace" ? ctx.access.planCode : null}
+          market={market}
         />
 
         <Panel>

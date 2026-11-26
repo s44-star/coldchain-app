@@ -945,6 +945,7 @@ export type Database = {
           issued_at: string;
           created_at: string;
           updated_at: string;
+          seller_snapshot: Json | null;
         };
         Insert: {
           id?: string;
@@ -961,6 +962,7 @@ export type Database = {
           issued_at?: string;
           created_at?: string;
           updated_at?: string;
+          seller_snapshot?: Json | null;
         };
         Update: {
           id?: string;
@@ -977,6 +979,7 @@ export type Database = {
           issued_at?: string;
           created_at?: string;
           updated_at?: string;
+          seller_snapshot?: Json | null;
         };
         Relationships: [
           {
@@ -2015,6 +2018,7 @@ export type Database = {
           sort_order: number;
           created_at: string;
           updated_at: string;
+          market: string;
         };
         Insert: {
           id?: string;
@@ -2038,6 +2042,7 @@ export type Database = {
           sort_order?: number;
           created_at?: string;
           updated_at?: string;
+          market?: string;
         };
         Update: {
           id?: string;
@@ -2061,6 +2066,7 @@ export type Database = {
           sort_order?: number;
           created_at?: string;
           updated_at?: string;
+          market?: string;
         };
         Relationships: [];
       };

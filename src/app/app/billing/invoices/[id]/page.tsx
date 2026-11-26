@@ -26,6 +26,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
   const lines = (Array.isArray(invoice.line_items) ? invoice.line_items : []) as Line[];
   const to = (invoice.billing_snapshot ?? {}) as Snapshot;
+  const seller = { name: "LexConv", address: "", email: "ceo@lexconv.com", tax_note: "", ...((invoice.seller_snapshot ?? {}) as Record<string, string>) };
 
   return (
     <div className="grid gap-6">
@@ -41,8 +42,11 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
           <div className="grid gap-3">
             <Logo />
             <div className="type-small text-ink-muted">
-              <p className="font-semibold text-ink">LexConv</p>
-              <p>ceo@lexconv.com</p>
+              <p className="font-semibold text-ink">{seller.name}</p>
+              {seller.address
+                ? seller.address.split("\n").map((line, i) => <p key={i}>{line}</p>)
+                : null}
+              <p>{seller.email}</p>
             </div>
           </div>
           <div className="grid gap-1 text-right">
@@ -97,7 +101,10 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
           </tfoot>
         </table>
 
-        <p className="type-caption text-ink-muted">Paid by card through Razorpay. Amounts in {invoice.currency}.</p>
+        <div className="grid gap-1 type-caption text-ink-muted">
+          {seller.tax_note ? <p>{seller.tax_note}</p> : null}
+          <p>Paid online through Razorpay. Amounts in {invoice.currency}.</p>
+        </div>
       </article>
     </div>
   );

@@ -9,8 +9,10 @@ export default function TermsPage() {
     <LegalPage title="Terms of service" updated="26 November 2026">
       <p>
         These terms apply to ColdChain OS, an online service for monitoring temperature and humidity in storage facilities,
-        provided by <strong>LexConv</strong>, United Kingdom (&ldquo;we&rdquo;). By creating an account you accept them on
-        behalf of the company you register (&ldquo;the customer&rdquo;).
+        provided by <strong>LexConv</strong> (&ldquo;we&rdquo;). Customers in India contract with LexConv in India and pay in
+        Indian rupees; all other customers contract with LexConv, United Kingdom, and pay in US dollars. The seller is named on
+        every invoice. By creating an account you accept these terms on behalf of the company you register (&ldquo;the
+        customer&rdquo;).
       </p>
 
       <h2>The service</h2>
@@ -31,7 +33,7 @@ export default function TermsPage() {
       <h2>Trial, plans and payment</h2>
       <ul>
         <li>New companies get a 14-day free trial without a card.</li>
-        <li>After the trial, a paid plan is needed to keep using the service. Prices are shown on the billing page in US dollars.</li>
+        <li>After the trial, a paid plan is needed to keep using the service. Prices are shown on the billing page: in Indian rupees for companies in India, in US dollars elsewhere.</li>
         <li>Each payment covers one month or one year. The first payment may include a one-time setup fee. Payments are processed by Razorpay.</li>
         <li>Subscriptions do not renew automatically. If a paid period ends, access continues for 3 days and then pauses until payment; your data is kept.</li>
         <li>
@@ -61,7 +63,11 @@ export default function TermsPage() {
       </p>
 
       <h2>Law</h2>
-      <p>These terms are governed by the laws of England and Wales. Questions: <a href="mailto:ceo@lexconv.com">ceo@lexconv.com</a>.</p>
+      <p>
+        For customers in India these terms are governed by the laws of India and the courts of India have jurisdiction. For all
+        other customers they are governed by the laws of England and Wales. Questions:{" "}
+        <a href="mailto:ceo@lexconv.com">ceo@lexconv.com</a>.
+      </p>
     </LegalPage>
   );
 }
