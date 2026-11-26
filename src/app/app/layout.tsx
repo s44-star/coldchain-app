@@ -26,6 +26,7 @@ const NAV = [
   { href: "/app/notifications", label: "Notifications" },
   { href: "/app/settings/team", label: "Team" },
   { href: "/app/settings/company", label: "Company" },
+  { href: "/app/settings/activity", label: "Activity", adminOnly: true },
   { href: "/app/billing", label: "Billing", ownerOnly: true },
   { href: "/app/settings/account", label: "Your account" },
 ];
@@ -53,7 +54,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
     .eq("company_id", ctx.company.companyId)
     .is("read_at", null);
 
-  const nav = NAV.filter((item) => !item.ownerOnly || can.manageBilling(ctx.role)).map((item) => ({
+  const nav = NAV.filter((item) => (!item.ownerOnly || can.manageBilling(ctx.role)) && (!item.adminOnly || can.manageTeam(ctx.role))).map((item) => ({
     href: item.href,
     label: item.href === "/app/notifications" && unread ? `${item.label} (${unread})` : item.label,
     exact: item.exact,

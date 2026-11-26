@@ -1756,6 +1756,72 @@ export type Database = {
           },
         ];
       };
+      sensor_readings_hourly: {
+        Row: {
+          sensor_id: string;
+          company_id: string;
+          warehouse_id: string;
+          zone_id: string | null;
+          hour: string;
+          readings: number;
+          temp_min: number | null;
+          temp_max: number | null;
+          temp_sum: number;
+          temp_n: number;
+          hum_min: number | null;
+          hum_max: number | null;
+          hum_sum: number;
+          hum_n: number;
+        };
+        Insert: {
+          sensor_id: string;
+          company_id: string;
+          warehouse_id: string;
+          zone_id?: string | null;
+          hour: string;
+          readings: number;
+          temp_min?: number | null;
+          temp_max?: number | null;
+          temp_sum?: number;
+          temp_n?: number;
+          hum_min?: number | null;
+          hum_max?: number | null;
+          hum_sum?: number;
+          hum_n?: number;
+        };
+        Update: {
+          sensor_id?: string;
+          company_id?: string;
+          warehouse_id?: string;
+          zone_id?: string | null;
+          hour?: string;
+          readings?: number;
+          temp_min?: number | null;
+          temp_max?: number | null;
+          temp_sum?: number;
+          temp_n?: number;
+          hum_min?: number | null;
+          hum_max?: number | null;
+          hum_sum?: number;
+          hum_n?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "sensor_readings_hourly_sensor_id_warehouse_id_company_id_fkey";
+            columns: ["sensor_id", "warehouse_id", "company_id"];
+            isOneToOne: false;
+            referencedRelation: "sensors";
+            referencedColumns: ["id", "warehouse_id", "company_id"];
+          },
+          {
+            foreignKeyName: "sensor_readings_hourly_zone_id_fkey";
+            columns: ["zone_id"];
+            isOneToOne: false;
+            referencedRelation: "storage_zones";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       sensors: {
         Row: {
           id: string;
@@ -2229,6 +2295,10 @@ export type Database = {
           p_method?: string;
         };
         Returns: string;
+      };
+      run_housekeeping: {
+        Args: Record<PropertyKey, never>;
+        Returns: Json;
       };
       run_sweeps: {
         Args: Record<PropertyKey, never>;

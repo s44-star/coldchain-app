@@ -146,3 +146,23 @@ export async function deleteCompany(_prev: FormState, formData: FormData): Promi
   revalidatePath("/admin");
   redirect(`/admin?deleted=${encodeURIComponent(company.name)}&users=${removedUsers}`);
 }
+
+/** Editable platform settings and their allowed ranges. Secrets are never editable here. */
+const EDITABLE_SETTINGS = {
+  trial_days: { min: 1, max: 90 },
+  reading_retention_months: { min: 3, max: 120 },
+} as const;
+
+export async function saveSetting(_prev: FormState, formData: FormData): Promise<FormState> {
+  const { supabase } = await requirePlatformAdmin();
+  const key = String(formData.get("key")) as keyof typeof EDITABLE_SETTINGS;
+  const rule = EDITABLE_SETTINGS[key];
+  if (!rule) return { error: "This setting cannot be changed here." };
+  const value = z.coerce.number().int().min(rule.min).max(rule.max).safeParse(formData.get("value"));
+  if (!value.success) return { error: `Enter a whole number from ${rule.min} to ${rule.max}.` };
+  // Through the signed-in client, so the audit log records who changed it.
+  const { error } = await supabase.from("app_settings").update({ value: value.data }).eq("key", key);
+  if (error) return { error: "Could not save the setting." };
+  revalidatePath("/admin/settings");
+  return { ok: true, message: "Saved." };
+}
