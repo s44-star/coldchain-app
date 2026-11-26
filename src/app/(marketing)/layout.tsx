@@ -22,15 +22,15 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           <Logo />
         </Link>
         <nav aria-label="Main" className="flex items-center gap-1 sm:gap-2">
-          <a href="/#how-it-works" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
+          <Link href="/#how-it-works" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
             How it works
-          </a>
+          </Link>
           <Link href="/pricing" className="rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink">
             Pricing
           </Link>
-          <a href="/#contact" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
+          <Link href="/#contact" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
             Contact
-          </a>
+          </Link>
           <Link href="/login" className="rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink">
             Sign in
           </Link>
