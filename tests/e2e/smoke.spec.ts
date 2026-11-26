@@ -142,6 +142,23 @@ test("payment webhook refuses requests when not configured or unsigned", async (
   expect([400, 503]).toContain(response.status());
 });
 
+test("delivery worker refuses requests without the cron secret", async ({ request }) => {
+  const response = await request.post("/api/cron/deliver");
+  expect([401, 503]).toContain(response.status());
+});
+
+for (const [path, heading] of [
+  ["/terms", "Terms of service"],
+  ["/privacy", "Privacy policy"],
+  ["/refunds", "Refund and cancellation policy"],
+  ["/contact", "Contact"],
+] as const) {
+  test(`${path} is published`, async ({ page }) => {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
+  });
+}
+
 test("sensor ingestion refuses requests without a device key", async ({ request }) => {
   const response = await request.post("/api/ingest/readings", { data: { temperature_c: 4.2 } });
   expect([401, 503]).toContain(response.status());

@@ -2,6 +2,8 @@
 
 import { createHash, randomBytes } from "node:crypto";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
+import { processDeliveries } from "@/lib/delivery";
 import { z } from "zod";
 import { getAppContext } from "@/lib/auth/context";
 import { fieldErrors, formValues, type FormState } from "@/lib/validation";
@@ -124,6 +126,7 @@ export async function simulateReadings(_prev: FormState, formData: FormData): Pr
   });
   if (error) return { error: error.message };
   const result = (data ?? {}) as { accepted?: number; alerts?: number };
+  if (result.alerts) after(() => processDeliveries(20).catch((e) => console.error("inline delivery failed", e)));
   revalidatePath("/app", "layout");
   return {
     ok: true,

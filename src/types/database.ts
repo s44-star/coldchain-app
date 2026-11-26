@@ -1465,6 +1465,7 @@ export type Database = {
           avatar_path: string | null;
           created_at: string;
           updated_at: string;
+          email_alerts: boolean;
         };
         Insert: {
           id: string;
@@ -1476,6 +1477,7 @@ export type Database = {
           avatar_path?: string | null;
           created_at?: string;
           updated_at?: string;
+          email_alerts?: boolean;
         };
         Update: {
           id?: string;
@@ -1487,6 +1489,7 @@ export type Database = {
           avatar_path?: string | null;
           created_at?: string;
           updated_at?: string;
+          email_alerts?: boolean;
         };
         Relationships: [];
       };
@@ -2152,6 +2155,12 @@ export type Database = {
           p_window_seconds: number;
         };
         Returns: boolean;
+      };
+      claim_deliveries: {
+        Args: {
+          p_limit?: number;
+        };
+        Returns: unknown[];
       };
       company_access_state: {
         Args: {

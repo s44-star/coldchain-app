@@ -23,7 +23,7 @@ export async function updateProfile(_prev: FormState, formData: FormData): Promi
 
   const { error } = await ctx.supabase
     .from("profiles")
-    .update({ full_name: parsed.data.fullName, phone: parsed.data.phone })
+    .update({ full_name: parsed.data.fullName, phone: parsed.data.phone, email_alerts: formData.get("emailAlerts") === "on" })
     .eq("id", ctx.userId);
   if (error) return { error: "Could not save your details. Try again.", values };
   revalidatePath("/app", "layout");

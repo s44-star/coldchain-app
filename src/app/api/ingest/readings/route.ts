@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
+import { processDeliveries } from "@/lib/delivery";
 import { z } from "zod";
 import { isServerEnvConfigured } from "@/lib/env";
 import { rateLimit } from "@/lib/rate-limit";
@@ -74,5 +75,9 @@ export async function POST(request: NextRequest) {
   }
 
   await admin.from("sensor_api_keys").update({ last_used_at: now }).eq("id", credential.id);
+  // New alerts: send their e-mails right after responding to the device.
+  if ((result as { alerts?: number } | null)?.alerts) {
+    after(() => processDeliveries(20).catch((error) => console.error("inline delivery failed", error)));
+  }
   return json(result);
 }

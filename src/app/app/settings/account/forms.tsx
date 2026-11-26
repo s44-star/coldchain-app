@@ -6,7 +6,7 @@ import { Field, Input, describedBy } from "@/components/ui/form";
 import type { FormState } from "@/lib/validation";
 import { changePassword, updateProfile } from "./actions";
 
-export function ProfileForm({ fullName, phone, email }: { fullName: string; phone: string; email: string }) {
+export function ProfileForm({ fullName, phone, email, emailAlerts }: { fullName: string; phone: string; email: string; emailAlerts: boolean }) {
   const [state, action] = useActionState(updateProfile, {} as FormState);
   const e = state.fieldErrors ?? {};
   return (
@@ -36,6 +36,13 @@ export function ProfileForm({ fullName, phone, email }: { fullName: string; phon
           aria-describedby={describedBy("phone", "hint", e.phone)}
         />
       </Field>
+      <label className="flex items-start gap-3 type-small text-ink">
+        <input type="checkbox" name="emailAlerts" defaultChecked={emailAlerts} className="mt-0.5 size-4 accent-[var(--primary)]" />
+        <span>
+          E-mail me when an alert is raised
+          <span className="block type-caption text-ink-muted">Viewers never receive alert e-mails.</span>
+        </span>
+      </label>
       <div>
         <SubmitButton pendingLabel="Saving">Save details</SubmitButton>
       </div>

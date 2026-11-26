@@ -13,6 +13,7 @@ declare -A STAGES=(
   [stage-2]="$(echo "${M}"/0014_*.sql)"
   [stage-3]="$(echo "${M}"/0015_*.sql)"
   [stage-4]="$(echo "${M}"/0016_*.sql)"
+  [stage-5]="$(echo "${M}"/0017_*.sql)"
 )
 
 build() {
