@@ -25,7 +25,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           <Link href="/#how-it-works" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
             How it works
           </Link>
-          <Link href="/pricing" className="rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink">
+          <Link href="/pricing" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
             Pricing
           </Link>
           <Link href="/#contact" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
