@@ -152,6 +152,8 @@ for (const [path, heading] of [
   ["/privacy", "Privacy policy"],
   ["/refunds", "Refund and cancellation policy"],
   ["/contact", "Contact"],
+  ["/about", "About us"],
+  ["/pricing", "Pricing"],
 ] as const) {
   test(`${path} is published`, async ({ page }) => {
     await page.goto(path);

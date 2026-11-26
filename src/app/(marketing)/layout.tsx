@@ -22,10 +22,13 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
           <Logo />
         </Link>
         <nav aria-label="Main" className="flex items-center gap-1 sm:gap-2">
-          <a href="#how-it-works" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
+          <a href="/#how-it-works" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
             How it works
           </a>
-          <a href="#contact" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
+          <Link href="/pricing" className="rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink">
+            Pricing
+          </Link>
+          <a href="/#contact" className="hidden rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink sm:block">
             Contact
           </a>
           <Link href="/login" className="rounded-control px-3 py-2 type-small text-ink-muted hover:text-ink">
@@ -52,6 +55,8 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
               </a>
             </p>
             <p className="flex flex-wrap gap-x-4 gap-y-1 md:justify-end">
+              <Link href="/about" className="hover:text-ink">About us</Link>
+              <Link href="/pricing" className="hover:text-ink">Pricing</Link>
               <Link href="/terms" className="hover:text-ink">Terms</Link>
               <Link href="/privacy" className="hover:text-ink">Privacy</Link>
               <Link href="/refunds" className="hover:text-ink">Refunds and cancellation</Link>
