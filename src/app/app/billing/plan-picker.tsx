@@ -37,12 +37,14 @@ export function PlanPicker({
   setupPaid,
   paymentsEnabled,
   currentPlan,
+  market,
 }: {
   plans: PlanView[];
   nonce: string;
   setupPaid: boolean;
   paymentsEnabled: boolean;
   currentPlan: string | null;
+  market: "global" | "in";
 }) {
   const router = useRouter();
   const [billing, setBilling] = useState<"monthly" | "annual">("monthly");
@@ -194,8 +196,11 @@ export function PlanPicker({
         })}
       </ul>
       <p className="type-caption text-ink-muted">
-        Prices in US dollars. Each payment covers one month or one year; paying early adds the new period after the current
-        one. Card payments are processed by Razorpay.
+        {market === "in"
+          ? "Prices in Indian rupees. Pay by UPI, card or netbanking. "
+          : "Prices in US dollars. "}
+        Each payment covers one month or one year; paying early adds the new period after the current one. Payments are
+        processed by Razorpay.
       </p>
     </div>
   );

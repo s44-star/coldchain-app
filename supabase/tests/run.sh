@@ -22,8 +22,10 @@ run() {
 run "${ROOT}/supabase/tests/00_supabase_stub.sql"
 for f in "${ROOT}"/supabase/migrations/*.sql; do run "$f"; done
 run "${ROOT}/supabase/seed/plans.sql"
+run "${ROOT}/supabase/seed/plans_in.sql"
 # Seeds must be idempotent
 run "${ROOT}/supabase/seed/plans.sql"
+run "${ROOT}/supabase/seed/plans_in.sql"
 run "${ROOT}/supabase/tests/01_helpers.sql"
 
 echo "▸ Static checks: RLS on every table, policies present, definer functions pinned"

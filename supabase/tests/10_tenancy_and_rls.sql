@@ -388,7 +388,7 @@ end $$;
 -- -----------------------------------------------------------------------------
 do $$ begin
   perform tests.as_anon();
-  perform tests.eq($q$ select count(*) from public.subscription_plans $q$, 3, 'anon reads the public price list');
+  perform tests.eq($q$ select count(*) from public.subscription_plans $q$, 6, 'anon reads the public price list');
   perform tests.throws($q$ select count(*) from public.companies $q$, 'anon cannot read companies', 'permission denied');
   perform tests.throws($q$ select count(*) from public.sensor_readings $q$, 'anon cannot read readings', 'permission denied');
   perform tests.throws($q$ select public.check_rate_limit('x', 1, 60) $q$, 'anon cannot call the rate limiter', 'permission denied');

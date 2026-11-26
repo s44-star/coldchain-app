@@ -10,22 +10,22 @@ const dollars = (cents: number | null) => (cents === null ? "" : String(cents / 
 
 export default async function AdminPlansPage() {
   const { supabase } = await requirePlatformAdmin();
-  const { data: plans } = await supabase.from("subscription_plans").select("*").order("sort_order");
+  const { data: plans } = await supabase.from("subscription_plans").select("*").order("market").order("sort_order");
 
   return (
     <>
-      <PageHeader title="Plans and prices" description="Prices in US dollars. Changes apply to new payments; paid periods are not affected." />
+      <PageHeader title="Plans and prices" description="Dollar plans are for every country except India; rupee plans (code ending in _in) are for companies in India. Changes apply to new payments; paid periods are not affected." />
       <div className="grid gap-6">
         {(plans ?? []).map((p) => (
           <Panel key={p.id}>
-            <PanelHeader title={p.name} description={p.requires_contact ? "Contact sales (no self-serve checkout)" : `Code: ${p.code}`} />
+            <PanelHeader title={`${p.name}${p.currency === "INR" ? " (India, ₹)" : " ($)"}`} description={p.requires_contact ? "Contact sales (no self-serve checkout)" : `Code: ${p.code}`} />
             <PanelBody>
               <ActionForm action={updatePlan} hidden={{ id: p.id }} className="grid gap-4">
                 <div className="grid w-full gap-4 sm:grid-cols-4">
                   {[
-                    ["monthly", "Monthly price ($)", dollars(p.monthly_price_cents)],
-                    ["annual", "Yearly price ($)", dollars(p.annual_price_cents)],
-                    ["setup", "Setup fee ($)", dollars(p.setup_fee_cents)],
+                    ["monthly", `Monthly price (${p.currency === "INR" ? "₹" : "$"})`, dollars(p.monthly_price_cents)],
+                    ["annual", `Yearly price (${p.currency === "INR" ? "₹" : "$"})`, dollars(p.annual_price_cents)],
+                    ["setup", `Setup fee (${p.currency === "INR" ? "₹" : "$"})`, dollars(p.setup_fee_cents)],
                   ].map(([name, label, value]) => (
                     <Field key={name} id={`${p.id}-${name}`} label={label!}>
                       <Input id={`${p.id}-${name}`} name={name} defaultValue={value} inputMode="decimal" />

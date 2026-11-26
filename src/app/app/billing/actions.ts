@@ -5,6 +5,7 @@ import { z } from "zod";
 import { getAppContext } from "@/lib/auth/context";
 import { can } from "@/lib/auth/roles";
 import { isServerEnvConfigured } from "@/lib/env";
+import { marketForCountry } from "@/lib/market";
 import { rateLimit } from "@/lib/rate-limit";
 import { createRazorpayOrder, razorpayConfig } from "@/lib/razorpay";
 import { verifyPaymentSignature } from "@/lib/razorpay-signature";
@@ -44,12 +45,15 @@ export async function startCheckout(input: { planCode: string; interval: "monthl
   }
 
   const admin = createAdminClient();
+  const { data: company } = await admin.from("companies").select("country_code").eq("id", ctx.company.companyId).maybeSingle();
+  const market = marketForCountry(company?.country_code);
   const { data: plan } = await admin
     .from("subscription_plans")
     .select("*")
     .eq("code", parsed.data.planCode)
     .eq("is_active", true)
     .eq("requires_contact", false)
+    .eq("market", market)
     .maybeSingle();
   if (!plan) return { ok: false, error: "This plan is not available." };
 
@@ -75,6 +79,14 @@ export async function startCheckout(input: { planCode: string; interval: "monthl
     });
   } catch (error) {
     console.error("startCheckout: order creation failed", error);
+    // Razorpay refuses foreign-currency orders until international payments are
+    // approved; say so plainly instead of "try again".
+    if (plan.currency !== "INR" && /\((400|401|403)\)/.test(String(error))) {
+      return {
+        ok: false,
+        error: "Card payments in US dollars are being switched on. E-mail ceo@lexconv.com and we will send you a payment link today.",
+      };
+    }
     return { ok: false, error: "The payment service did not respond. Try again in a minute." };
   }
 
