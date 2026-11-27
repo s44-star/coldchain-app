@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "About us" };
 
 export default function AboutPage() {
   return (
-    <LegalPage title="About us" updated="26 November 2026">
+    <LegalPage title="About us" updated="27 November 2026">
       <p>
         ColdChain OS is software for cold storages, pharmaceutical and food warehouses. It records temperature and humidity from
         sensors every few minutes, raises an alert the moment a chamber goes outside its limits, and keeps the records that food
@@ -15,8 +15,8 @@ export default function AboutPage() {
       </p>
       <h2>Who we are</h2>
       <p>
-        ColdChain OS is built and operated by <strong>LexConv</strong>, founded by Subham Praharaj. LexConv serves customers in
-        India from India and customers in other countries from the United Kingdom.
+        ColdChain OS is built and operated by <strong>LexConv</strong>, a business registered in India and founded by Subham
+        Praharaj. We serve customers in India and abroad.
       </p>
       <h2>What customers get</h2>
       <ul>
