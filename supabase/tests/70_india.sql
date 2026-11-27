@@ -26,8 +26,9 @@ begin
   select * into v_inv from public.invoices where company_id = 'd1000000-0000-4000-8000-0000000000a1'::uuid;
   perform tests.eq(format('select %s', v_inv.total_cents), 1499800, 'rupee invoice total');
   perform tests.eq(format($q$ select count(*) from public.invoices where id = %L and currency = 'INR' and seller_snapshot ->> 'tax_note' = 'Not registered under GST.' $q$, v_inv.id), 1, 'rupee invoice carries the Indian seller');
-  perform tests.eq($q$ select count(*) from public.invoices where currency = 'USD' and (seller_snapshot ->> 'address') = 'United Kingdom' $q$,
-                   (select count(*)::int from public.invoices where currency = 'USD'), 'dollar invoices carry the UK seller');
+  perform tests.eq($q$ select count(*) from public.invoices where currency = 'USD' and (seller_snapshot ->> 'address') = 'India' $q$,
+                   (select count(*)::int from public.invoices where currency = 'USD'), 'dollar invoices carry the same Indian seller');
+  perform tests.eq($q$ select count(*) from public.invoices where seller_snapshot::text like '%United Kingdom%' $q$, 0, 'no invoice names a UK seller');
 
   -- Seller details are fixed once issued.
   perform tests.as_postgres();

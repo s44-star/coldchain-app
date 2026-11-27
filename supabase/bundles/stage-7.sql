@@ -8,7 +8,7 @@
 -- ColdChain OS · 0019_india_market
 -- Companies in India see rupee plans and pay through domestic Razorpay; every
 -- other country keeps the US-dollar plans. Each invoice records the seller it
--- was issued by (Indian or UK entity), taken from app_settings when issued.
+-- was issued by, taken from app_settings when issued.
 -- =============================================================================
 
 alter table public.subscription_plans

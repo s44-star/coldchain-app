@@ -7,8 +7,8 @@ export const metadata: Metadata = { title: "Contact" };
 
 export default function ContactPage() {
   return (
-    <LegalPage title="Contact" updated="26 November 2026">
-      <p>ColdChain OS is built and operated by <strong>LexConv</strong>, United Kingdom.</p>
+    <LegalPage title="Contact" updated="27 November 2026">
+      <p>ColdChain OS is built and operated by <strong>LexConv</strong>, India.</p>
       <ul>
         <li>
           Sales, demos and onboarding: <a href={demoMailto}>{CONTACT_EMAIL}</a>

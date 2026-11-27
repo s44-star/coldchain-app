@@ -5,7 +5,7 @@ export const metadata: Metadata = { title: "Refund and cancellation policy" };
 
 export default function RefundsPage() {
   return (
-    <LegalPage title="Refund and cancellation policy" updated="26 November 2026">
+    <LegalPage title="Refund and cancellation policy" updated="27 November 2026">
       <h2>Try before you pay</h2>
       <p>Every company starts with a 14-day free trial. No card is needed and nothing is charged automatically.</p>
 

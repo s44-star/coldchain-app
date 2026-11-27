@@ -6,12 +6,12 @@ export const metadata: Metadata = { title: "Terms of service" };
 
 export default function TermsPage() {
   return (
-    <LegalPage title="Terms of service" updated="26 November 2026">
+    <LegalPage title="Terms of service" updated="27 November 2026">
       <p>
         These terms apply to ColdChain OS, an online service for monitoring temperature and humidity in storage facilities,
-        provided by <strong>LexConv</strong> (&ldquo;we&rdquo;). Customers in India contract with LexConv in India and pay in
-        Indian rupees; all other customers contract with LexConv, United Kingdom, and pay in US dollars. The seller is named on
-        every invoice. By creating an account you accept these terms on behalf of the company you register (&ldquo;the
+        provided by <strong>LexConv</strong>, a business registered in India (&ldquo;we&rdquo;). Customers in India pay in
+        Indian rupees; customers in other countries pay in US dollars. The seller is named on every invoice. By creating an
+        account you accept these terms on behalf of the company you register (&ldquo;the
         customer&rdquo;).
       </p>
 
@@ -64,8 +64,8 @@ export default function TermsPage() {
 
       <h2>Law</h2>
       <p>
-        For customers in India these terms are governed by the laws of India and the courts of India have jurisdiction. For all
-        other customers they are governed by the laws of England and Wales. Questions:{" "}
+        These terms are governed by the laws of India and the courts of India have jurisdiction. Nothing in them removes rights
+        that the law of your own country gives you and that cannot be excluded by contract. Questions:{" "}
         <a href="mailto:ceo@lexconv.com">ceo@lexconv.com</a>.
       </p>
     </LegalPage>

@@ -11,7 +11,7 @@
   - Without `RESEND_API_KEY` rows are marked `provider_not_configured`; nothing pretends to send.
 - **Your account → "E-mail me when an alert is raised"** (`profiles.email_alerts`).
 - **Legal pages:** `/terms`, `/privacy`, `/refunds`, `/contact`, linked from the footer and signup.
-  Written for LexConv (UK); have a lawyer review them before large customers sign.
+  Written for LexConv (India); have a lawyer review them before large customers sign.
 - **Alert texts** no longer show trailing zeros (`8 °C`, not `8.00 °C`).
 - **Company switcher** in the sidebar for people in more than one company.
 
