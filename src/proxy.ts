@@ -5,6 +5,30 @@ import { getPublicEnv } from "@/lib/env";
 import { buildCsp, createNonce } from "@/lib/security/csp";
 
 /**
+ * Production must be used on its own domain: payment providers only accept
+ * checkouts from the registered website, and sign-in cookies are per host.
+ * Visits to the production *.vercel.app address are sent to the same path on
+ * NEXT_PUBLIC_SITE_URL. Preview deployments and API calls are left alone.
+ */
+function canonicalRedirect(request: NextRequest): NextResponse | null {
+  if (process.env.VERCEL_ENV !== "production") return null;
+  const site = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!site) return null;
+  let target: URL;
+  try {
+    target = new URL(site);
+  } catch {
+    return null;
+  }
+  const host = request.headers.get("host") ?? request.nextUrl.host;
+  if (!host.endsWith(".vercel.app") || host === target.host) return null;
+  if (request.nextUrl.pathname.startsWith("/api/")) return null;
+  if (request.method !== "GET" && request.method !== "HEAD") return null;
+  const url = new URL(request.nextUrl.pathname + request.nextUrl.search, target);
+  return NextResponse.redirect(url, 308);
+}
+
+/**
  * Runs before every page and API request (see `config.matcher`):
  *  1. Creates a per-request CSP nonce and passes it to the app.
  *  2. Refreshes the Supabase session cookie, because Server Components
@@ -15,6 +39,9 @@ import { buildCsp, createNonce } from "@/lib/security/csp";
  * working.
  */
 export async function proxy(request: NextRequest) {
+  const canonical = canonicalRedirect(request);
+  if (canonical) return canonical;
+
   const env = getPublicEnv();
   const nonce = createNonce();
   const csp = buildCsp({
