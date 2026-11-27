@@ -17,6 +17,7 @@ declare -A STAGES=(
   [stage-6]="$(echo "${M}"/0018_*.sql)"
   [stage-7]="$(echo "${M}"/0019_*.sql) ${ROOT}/supabase/seed/plans_in.sql"
   [stage-8]="$(echo "${M}"/0020_*.sql)"
+  [stage-9]="$(echo "${M}"/0021_*.sql)"
 )
 
 build() {

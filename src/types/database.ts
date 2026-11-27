@@ -2220,6 +2220,18 @@ export type Database = {
         };
         Returns: string;
       };
+      admin_record_offline_payment: {
+        Args: {
+          p_company_id: string;
+          p_plan_id: string;
+          p_interval: Database["public"]["Enums"]["billing_interval"];
+          p_amount_cents: number;
+          p_setup_fee_cents: number;
+          p_method: string;
+          p_reference: string;
+        };
+        Returns: string;
+      };
       check_rate_limit: {
         Args: {
           p_key: string;

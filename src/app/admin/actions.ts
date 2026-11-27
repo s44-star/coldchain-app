@@ -189,3 +189,47 @@ export async function saveSeller(_prev: FormState, formData: FormData): Promise<
   revalidatePath("/admin/settings");
   return { ok: true, message: "Saved. New invoices use these details." };
 }
+
+const offlineSchema = z.object({
+  companyId: z.string().uuid(),
+  planId: z.string().uuid("Choose a plan"),
+  interval: z.enum(["monthly", "annual"]),
+  amount: z.string().trim().regex(/^\d[\d,]*(\.\d{1,2})?$/, "Enter the amount received, for example 14999"),
+  setupFee: z.string().trim().regex(/^\d[\d,]*(\.\d{1,2})?$/, "Enter the setup fee part, or 0"),
+  method: z.enum(["bank_transfer", "upi", "cash", "cheque", "other"]),
+  reference: z.string().trim().min(3, "Enter the UTR or transaction reference").max(50),
+});
+
+const toMinor = (v: string) => Math.round(Number(v.replace(/,/g, "")) * 100);
+
+/** Records money received outside Razorpay and activates the plan (super admin only). */
+export async function recordOfflinePayment(_prev: FormState, formData: FormData): Promise<FormState> {
+  const { supabase } = await requirePlatformAdmin();
+  const parsed = offlineSchema.safeParse(
+    Object.fromEntries(["companyId", "planId", "interval", "amount", "setupFee", "method", "reference"].map((k) => [k, String(formData.get(k) ?? "")])),
+  );
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Check the details." };
+  const d = parsed.data;
+  const amount = toMinor(d.amount);
+  const setup = toMinor(d.setupFee || "0");
+  if (amount <= 0 || setup >= amount) return { error: "The total must be above zero and above the setup fee." };
+
+  // Through the signed-in client: the database checks super admin rights and
+  // the audit log records who entered the payment.
+  const { error } = await supabase.rpc("admin_record_offline_payment", {
+    p_company_id: d.companyId,
+    p_plan_id: d.planId,
+    p_interval: d.interval,
+    p_amount_cents: amount,
+    p_setup_fee_cents: setup,
+    p_method: d.method,
+    p_reference: d.reference,
+  });
+  if (error) {
+    console.error("recordOfflinePayment failed", error.message);
+    return { error: error.code === "22023" ? error.message : "Could not record the payment." };
+  }
+  revalidatePath(`/admin/companies/${d.companyId}`);
+  revalidatePath("/admin/payments");
+  return { ok: true, message: "Payment recorded. The plan is active and the invoice is issued." };
+}

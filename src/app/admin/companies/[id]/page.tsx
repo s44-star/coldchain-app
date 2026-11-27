@@ -4,14 +4,15 @@ import { ActionForm } from "@/components/forms/action-form";
 import { SubmitButton } from "@/components/forms/form-parts";
 import { roleLabels } from "@/components/status";
 import { Badge } from "@/components/ui/badge";
-import { Input, Select } from "@/components/ui/form";
+import { Field, Input, Select } from "@/components/ui/form";
 import { Panel, PanelBody, PanelHeader } from "@/components/ui/panel";
 import { TBody, THead, Table, Td, Th, Tr } from "@/components/ui/table";
 import { requirePlatformAdmin } from "@/lib/auth/admin";
 import { countryName } from "@/lib/countries";
 import { formatDateTime } from "@/lib/format";
 import { formatMoney } from "@/lib/money";
-import { deleteCompany, extendTrial, setCompanyStatus, setDemo } from "../../actions";
+import { deleteCompany, extendTrial, recordOfflinePayment, setCompanyStatus, setDemo } from "../../actions";
+import { marketForCountry } from "@/lib/market";
 
 const day = (iso: string | null) => (iso ? (formatDateTime(iso).split(",")[0] ?? "") : "never");
 const limit = (used: number, max: number | null) => `${used} of ${max ?? "unlimited"}`;
@@ -22,10 +23,17 @@ export default async function AdminCompanyPage({ params }: { params: Promise<{ i
   const { data: c } = await supabase.from("companies").select("*").eq("id", id).maybeSingle();
   if (!c) notFound();
 
+  const { data: offlinePlans } = await supabase
+    .from("subscription_plans")
+    .select("id, name, currency, monthly_price_cents, annual_price_cents, setup_fee_cents")
+    .eq("market", marketForCountry(c?.country_code))
+    .eq("is_active", true)
+    .order("sort_order");
+
   const [{ data: members }, { data: usageRows }, { data: payments }, { data: access }] = await Promise.all([
     supabase.from("company_members").select("user_id, role, created_at").eq("company_id", id),
     supabase.rpc("company_usage", { p_company_id: id }),
-    supabase.from("payment_records").select("id, created_at, amount_cents, currency, status, provider_payment_id").eq("company_id", id).order("created_at", { ascending: false }).limit(20),
+    supabase.from("payment_records").select("id, created_at, amount_cents, currency, status, provider, method, provider_payment_id").eq("company_id", id).order("created_at", { ascending: false }).limit(20),
     supabase.rpc("company_access_state", { p_company_id: id }),
   ]);
   const { data: people } = members?.length
@@ -175,6 +183,62 @@ export default async function AdminCompanyPage({ params }: { params: Promise<{ i
         </Panel>
 
         <Panel>
+          <PanelHeader
+            title="Record a payment received outside Razorpay"
+            description="For bank transfers, UPI to your bank account, cash or cheque. Activates the plan for the period paid and issues the invoice, exactly like an online payment. Check the money has arrived first: this cannot be undone."
+          />
+          <PanelBody>
+            <ActionForm
+              action={recordOfflinePayment}
+              hidden={{ companyId: id }}
+              className="grid items-stretch gap-4 sm:grid-cols-2"
+              confirm={`Record this payment for ${c.name} and activate the plan?`}
+            >
+              <Field id="op-plan" label="Plan" required>
+                <Select id="op-plan" name="planId" required defaultValue="">
+                  <option value="" disabled>
+                    Choose a plan
+                  </option>
+                  {(offlinePlans ?? []).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} ({p.currency})
+                      {p.monthly_price_cents ? `: ${formatMoney(p.monthly_price_cents, p.currency)}/month` : ""}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
+              <Field id="op-interval" label="Period paid for" required>
+                <Select id="op-interval" name="interval" defaultValue="monthly">
+                  <option value="monthly">1 month</option>
+                  <option value="annual">12 months</option>
+                </Select>
+              </Field>
+              <Field id="op-amount" label="Total received" hint="In the plan's currency, for example 14999" required>
+                <Input id="op-amount" name="amount" inputMode="decimal" required />
+              </Field>
+              <Field id="op-setup" label="Of which setup fee" hint="0 if no setup fee was charged">
+                <Input id="op-setup" name="setupFee" inputMode="decimal" defaultValue="0" />
+              </Field>
+              <Field id="op-method" label="Paid by" required>
+                <Select id="op-method" name="method" defaultValue="bank_transfer">
+                  <option value="bank_transfer">Bank transfer (NEFT / RTGS / IMPS)</option>
+                  <option value="upi">UPI</option>
+                  <option value="cheque">Cheque</option>
+                  <option value="cash">Cash</option>
+                  <option value="other">Other</option>
+                </Select>
+              </Field>
+              <Field id="op-ref" label="Reference" hint="UTR, UPI transaction ID or cheque number" required>
+                <Input id="op-ref" name="reference" required maxLength={50} autoComplete="off" />
+              </Field>
+              <div className="sm:col-span-2">
+                <SubmitButton pendingLabel="Recording">Record payment and activate</SubmitButton>
+              </div>
+            </ActionForm>
+          </PanelBody>
+        </Panel>
+
+        <Panel>
           <PanelHeader title="Payments" />
           {payments?.length ? (
             <Table caption="Payments">
@@ -183,7 +247,8 @@ export default async function AdminCompanyPage({ params }: { params: Promise<{ i
                   <Th>Date</Th>
                   <Th className="text-right">Amount</Th>
                   <Th>Status</Th>
-                  <Th>Razorpay payment</Th>
+                  <Th>How</Th>
+                  <Th>Reference</Th>
                 </tr>
               </THead>
               <TBody>
@@ -192,7 +257,8 @@ export default async function AdminCompanyPage({ params }: { params: Promise<{ i
                     <Td className="text-ink-muted">{day(p.created_at)}</Td>
                     <Td numeric>{formatMoney(p.amount_cents, p.currency)}</Td>
                     <Td>{p.status}</Td>
-                    <Td className="font-mono text-xs">{p.provider_payment_id ?? ""}</Td>
+                    <Td>{p.provider === "manual" ? `Recorded: ${(p.method ?? "").replace("_", " ")}` : "Razorpay"}</Td>
+                    <Td className="font-mono text-xs break-all">{(p.provider_payment_id ?? "").replace(/^ref_/, "")}</Td>
                   </Tr>
                 ))}
               </TBody>
