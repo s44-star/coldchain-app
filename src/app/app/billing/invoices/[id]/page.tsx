@@ -21,7 +21,7 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
   const ctx = await getAppContext();
   if (!can.manageBilling(ctx.role)) notFound();
 
-  const { data: invoice } = await ctx.supabase.from("invoices").select("*").eq("id", id).maybeSingle();
+  const { data: invoice } = await ctx.supabase.from("invoices").select("*, payment_records(provider, method)").eq("id", id).maybeSingle();
   if (!invoice) notFound();
 
   const lines = (Array.isArray(invoice.line_items) ? invoice.line_items : []) as Line[];
@@ -103,9 +103,25 @@ export default async function InvoicePage({ params }: { params: Promise<{ id: st
 
         <div className="grid gap-1 type-caption text-ink-muted">
           {seller.tax_note ? <p>{seller.tax_note}</p> : null}
-          <p>Paid online through Razorpay. Amounts in {invoice.currency}.</p>
+          <p>
+            {paidBy(invoice.payment_records)} Amounts in {invoice.currency}.
+          </p>
         </div>
       </article>
     </div>
   );
+}
+
+const METHOD_LABELS: Record<string, string> = {
+  bank_transfer: "bank transfer",
+  upi: "UPI",
+  cheque: "cheque",
+  cash: "cash",
+  other: "direct payment",
+};
+
+function paidBy(payment: { provider: string; method: string | null } | { provider: string; method: string | null }[] | null): string {
+  const p = Array.isArray(payment) ? payment[0] : payment;
+  if (p?.provider === "manual") return `Paid by ${METHOD_LABELS[p.method ?? ""] ?? "direct payment"}.`;
+  return "Paid online through Razorpay.";
 }
