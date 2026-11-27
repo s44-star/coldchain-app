@@ -68,6 +68,6 @@ Plan chalu, invoice ban jayega. Pehle bank me paisa aaya hai, check kar lena (ye
 - **Data galti se gaya:** Supabase Pro me Database → Backups → restore.
 
 ## Jo jaan-boojh ke nahi banaya (baad me chahiye to)
-- Auto-renew (abhi har mahina/saal customer khud pay karta hai, reminder e-mail ke saath nahi).
+- Auto-renew aur renewal reminder e-mail (abhi har mahina/saal customer khud pay karta hai; period khatam hone pe app me 3 din ki warning dikhti hai, phir lock).
 - SMS / WhatsApp alert (abhi e-mail + app).
 - 24 mahine se purani readings ki report (data hourly summary me rakha hai).
